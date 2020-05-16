@@ -1,5 +1,15 @@
 extends Node
 
+# Game settings ----------------------------------------------------------------
+
+# Set the global settings
+var volume = 0
+
+# try to determine whether we are on a mobile or desktop device (for controls)
+var device_type = 0
+
+
+# Network parameters -----------------------------------------------------------
 # Default game port
 const DEFAULT_PORT = 10567
 
@@ -13,6 +23,7 @@ var player_ship = "Vostok"
 # Names for remote players in id:name format
 var players = {}
 var player_ships = {}
+
 
 # Signals to let lobby GUI know what's going on
 signal player_list_changed()
@@ -75,7 +86,7 @@ remote func unregister_player(id):
 	emit_signal("player_list_changed")
 
 remote func pre_start_game(spawn_points):
-	# Change scene
+	# Adds gameworld to the tree, and HIDES the lobby (maybe you can add clients after gamestart?)
 	var world = load("res://sol.tscn").instance()
 	get_tree().get_root().add_child(world)
 

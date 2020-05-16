@@ -9,20 +9,42 @@ slave var slave_pos = Vector2()
 slave var slave_motion = 0
 slave var slave_rotation = 0.0
 
+var object_name
 
+# Ship behaviour variables
+var current_anim = ""
+var prev_bombing = false
+var prev_missiling = false
+var bomb_index = 0
+var missile_index = 0
+var spinforce = 10
+var brake_spin = 0.1
+var rotvel = 0
+
+
+# Ship status variables.
 var engine_on = false
 var slv_engine_on = false
+var hull = 100
+var hulltype 
+var fuel = 100
+var burnrate = 0.01
+var exploded = false
 
 export var stunned = false
-export var test = false
+#export var test = false
 
 var zoom = 1
 var zoom_grain = 10
 var max_zoom = 400
 var min_zoom = 0.01
 
+
+
 var vostok_hull = load("res://ships/vostok.tscn")
 var dragon_hull = load("res://ships/dragon.tscn")
+var station_object = preload("res://station.tscn")
+var explosion_object = preload("res://scenes/explosion.tscn")
 
 var ship_name = ""
 var ship_type = "Vostok"
@@ -30,11 +52,26 @@ var ship_type = "Vostok"
 var gravity
 var motion
 var target
+var target_index = 0
 var current_motion 
+
+sync func explode():
+	var boom = explosion_object.instance()
+	boom.position = position
+	boom.rotation = rotation + deg2rad(90)
+	
+	if has_node("main_hull"):
+		$main_hull.queue_free()
+		
+	get_node("../..").add_child(boom)
+	set_mode(1)
+	$Indicator.set_visible(false)
+	exploded = true
+	
 
 # Use sync because it will be called everywhere
 sync func setup_bomb(bomb_name, pos, by_who):
-	var bomb = preload("res://station.tscn").instance()
+	var bomb = station_object.instance()
 	bomb.set_name(bomb_name) # Ensure unique name for the bomb
 	bomb.position = pos
 	bomb.from_player = by_who
@@ -45,46 +82,148 @@ sync func setup_bomb(bomb_name, pos, by_who):
 	# No need to set network mode to bomb, will be owned by master by default
 	get_node("../..").add_child(bomb)
 
-var current_anim = ""
-var prev_bombing = false
-var bomb_index = 0
-
-func change_shiptype(ship):
-	if ship == "Vostok":
-		add_child(vostok_hull.instance())
-		
-	if ship == "Dragon":
-		add_child(dragon_hull.instance())
 	
 
 func _ready():
+	object_name = ship_name
 	# checks to see if we are on the computer that is actually in control of this node.
 	if is_network_master():
+		$Camera2D._set_current(true)
 		$Camera2D.add_to_group("camera")
+		add_to_group("player")
+	else:
+		add_to_group("target")
 
 	change_shiptype(ship_type)
 
-	$hull/plume.set_visible(false)
-	stunned = false
+	$main_hull/plume.set_visible(false)
+
 	slave_pos = position
+	
+func _integrate_forces(state):
+
+	current_motion = state.get_linear_velocity()
+
+	if not is_network_master():
+		position = slave_pos
+		set_rotation(slave_rotation)
+	else:
+		gravity = state.get_total_gravity() 
+		motion = state.get_linear_velocity()
+
+func _process(delta):
+	if is_network_master():
+		query_target()
 
 
+
+func _physics_process(delta):
+	
+	# zero out the motion and torque settings for this frame
+	var motion = 0.0
+	var torque = 0.0
+	
+	if not exploded:
+		if is_network_master():
+			# handles camera zoom level-----------------------------------------------
+			zoom(delta)
+			# handles ship status ----------------------------------------------------
+			throttle()
+			check_damage()
+			#todo change move player to "fire engine" or something.
+			motion = move_player()
+			
+			torque = rotate_player()
+			# ------------------------------------------------------------------------
+	
+			# handles weapons --------------------------------------------------------
+			var bombing = Input.is_action_pressed("set_bomb")
+	
+	
+			#Checks to see if a bomb is not already being deployed
+			if bombing and not prev_bombing:
+				#if not then make a new bomb with a name made of the ships name and the unique ID of the bomb
+				var bomb_name = get_name() + str(bomb_index)
+	
+				var bomb_pos = position
+				var bomb_rot = rotation
+				rpc("setup_bomb", bomb_name, bomb_pos, get_tree().get_network_unique_id())
+	
+			prev_bombing = bombing
+			# ------------------------------------------------------------------------
+			
+			# transfer the information for this ship to the server info to be used for puppets on other machines
+			rset("slave_motion", motion)
+			rset("slave_pos", position)
+			rset("slave_rotation", get_rotation())
+			rset("slv_engine_on", engine_on)
+		else:
+			position = slave_pos
+			set_rotation(slave_rotation)
+			motion = slave_motion
+			engine_on = slv_engine_on
+			rotation = slave_rotation
+	
+	
+		
+		var motioned = Vector2(motion,0).rotated(get_rotation()) 
+	
+		apply_impulse(Vector2(0,0), motioned)
+		apply_torque_impulse(torque)
+		
+		if not is_network_master():
+			slave_pos = position # To avoid jitter
+
+func change_shiptype(ship):
+	
+	if has_node("main_hull"):
+		$main_hull.queue_free()
+		
+	if ship == "Vostok":
+		hulltype = vostok_hull.instance()
+		
+	if ship == "Dragon":
+		hulltype = dragon_hull.instance()
+	
+	if not has_node("main_hull"):
+		hulltype = dragon_hull.instance()
+		hulltype.set_name("main_hull")
+		add_child(hulltype)
+
+func query_target():
+	var targets = get_tree().get_nodes_in_group("target")
+	target = targets[target_index]
+	#print(targets[target_index].object_name)
+	#print("targets.size is ", targets.size())
+	#print("targets.index is ", target_index)
+	
+	if Input.is_action_just_pressed("target_up"):
+		target_index += 1
+		if target_index > (targets.size()-1):
+			target_index = (targets.size() - 1)
+	if Input.is_action_just_pressed("target_down"):
+		target_index -= 1
+		if target_index < 0:
+			target_index = 0
+	#print(targets)
 
 func rotate_player():
 	var rotation = 0.0
 	if Input.is_action_pressed("move_left"):
-		rotation = -10
+		rotation = -spinforce
 	if Input.is_action_pressed("move_right"):
-		rotation = 10
-		
+		rotation = spinforce
+	if Input.is_action_pressed("move_down"):
+		auto_brake()
+		rotation = rotvel
 	return rotation
 	
 func throttle():
 	
 	if engine_on:
-		$hull/plume.set_visible(true)
+		$main_hull/plume.set_visible(true)
 	else:
-		$hull/plume.set_visible(false)
+		$main_hull/plume.set_visible(false)
 		
 	
 func move_player():
@@ -92,11 +231,12 @@ func move_player():
 	engine_on = false
 
 	if Input.is_action_pressed("move_up"):
+		fuel -= burnrate
 		motion += 3
 		engine_on = true
 		
 	if Input.is_action_pressed("move_down"):
-		motion += -3
+		pass
 		
 	return motion
 
@@ -115,101 +255,106 @@ func zoom(delta):
 	
 	$Camera2D.set_zoom(adjust)
 
-func animate(motion):
-	var new_anim = "standing"
-	if motion.y < 0:
-		new_anim = "walk_up"
-	elif motion.y > 0:
-		new_anim = "walk_down"
-	elif motion.x < 0:
-		new_anim = "walk_left"
-	elif motion.x > 0:
-		new_anim = "walk_right"
-
-		
-	if stunned:
-		new_anim = "stunned"
-		
-	if new_anim != current_anim:
-		current_anim = new_anim
-		get_node("anim").play(current_anim)
-
-func _integrate_forces(state):
-	current_motion = state.get_linear_velocity()
-	
-	
-	if not is_network_master():
-		position = slave_pos
-		set_rotation(slave_rotation)
-	else:
-		gravity = state.get_total_gravity() 
-		motion = state.get_linear_velocity()
-
-func _physics_process(delta):
-	var motion = 0.0
-	var torque = 0.0
-	zoom(delta)
-	
-	if is_network_master():
-		$Camera2D._set_current(true)
-		motion = move_player()
-		torque = rotate_player()
-
-		# handles weapons --------------------------------------------------------
-		var bombing = Input.is_action_pressed("set_bomb")
-
-		#if stunned:
-			#bombing = false
-			#motion = 0.0	
-
-		#Checks to see if a bomb is not already being deployed
-		if bombing and not prev_bombing:
-			#if not then make a new bomb with a name made of the ships name and the unique ID of the bomb
-			var bomb_name = get_name() + str(bomb_index)
-			print(bomb_name)
-			#var facing = 
-			var bomb_pos = position
-			var bomb_rot = rotation
-			rpc("setup_bomb", bomb_name, bomb_pos, get_tree().get_network_unique_id())
-
-		prev_bombing = bombing
-		# ------------------------------------------------------------------------
-		
-		# transfer the information for this ship to the server info to be used for puppets on other machines
-		rset("slave_motion", motion)
-		rset("slave_pos", position)
-		rset("slave_rotation", get_rotation())
-		rset("slv_engine_on", engine_on)
-	else:
-		position = slave_pos
-		set_rotation(slave_rotation)
-		motion = slave_motion
-		engine_on = slv_engine_on
-		rotation = slave_rotation
-	throttle()
-		#
-	#animate(motion)
-	
-	var motioned = Vector2(motion,0).rotated(get_rotation()) 
 
 
-
-	apply_impulse(Vector2(0,0), motioned)
-	apply_torque_impulse(torque)
-	
-	if not is_network_master():
-		slave_pos = position # To avoid jitter
-
-slave func stun():
+puppet func damage():
 	stunned = true
-
-master func exploded(by_who):
+	
+	# get where we were hit
+	# take damage to that area
+	
+	
+master func hit(by_who):
 	if stunned:
 		return
-	rpc("stun") # Stun slaves
-	stun() # Stun master - could use sync to do both at once
+	rpc("damage") # hit puppets
+	damage() # Stun master - could use sync to do both at once
 
 func set_player_name(new_name,shiptype = "Vostok"):
 	get_node("label").set_text(new_name)
 	ship_type = shiptype
 
+func check_damage():
+	for item in $damage.get_overlapping_areas():
+		if item.is_in_group("corona") and hull > 0:
+			hull -= 1
+
+			if hull == 0:
+				explode()
+
+
+func launch_missile():
+			# handles weapons --------------------------------------------------------
+		var missiling = Input.is_action_pressed("set_bomb")
+
+
+		#Checks to see if a bomb is not already being deployed
+		if missiling and not prev_missiling:
+			#if not then make a new bomb with a name made of the ships name and the unique ID of the bomb
+			var missile_name = get_name() + str(missile_index)
+
+			var missile_pos = position
+			var bomb_rot = rotation
+			rpc("launch_missile", missile_name, position, get_tree().get_network_unique_id())
+
+		prev_missiling = missiling
+		# ------------------------------------------------------------------------
+
+func come_to_heading(heading):
+	#print("desired heading in degs: ", rad2deg(heading))
+	#print("desired heading in rads:",heading)
+	var degangle = get_facing()
+	var difference = abs(heading - degangle)
+
+	if difference > deg2rad(180):
+		rotvel -= spinforce
+	else:
+		if degangle > heading:
+			rotvel -= brake_spin
+		if degangle < heading:
+			rotvel += brake_spin
+
+	var error = deg2rad(2.5)
+	var fine_error = deg2rad(1)
+	if degangle > (heading - error) and degangle < (heading + error):
+		if rotvel != 0:
+			rotvel = 0
+
+		if degangle > (heading - fine_error) and degangle < (heading + fine_error):
+			#print("heading is finally:",heading)
+			var currentrotation = get_rotation()
+			currentrotation = heading
+			set_rotation(currentrotation)
+			#print("rotation is finally:", currentrotation.y)
+		
+	return rotvel
+
+func auto_brake():
+	var anglemotion = get_angle(false)
+	var desired_angle = fmod((anglemotion + PI),deg2rad(360.0))
+	print(get_facing()," + ",desired_angle)
+	if get_facing() != desired_angle:
+		come_to_heading(desired_angle)
+	return rotvel
+
+func get_facing():
+	var facing = get_rotation()
+
+	# constrain direction ship is facing to a 360° arc
+	#if facing < 0.0:
+		#facing = deg2rad(180) + (deg2rad(180) - (facing * -1))
+	return facing
+
+func get_angle(inverse = false):
+	var curvel = get_linear_velocity().normalized()
+
+	# collect our motion vectors into easy variables
+	var x = curvel.x
+	var y = curvel.y
+	
+	var velo = Vector2(curvel.x,curvel.y)
+	var pos = Vector2(0,0)
+	
+	var angleget = velo.angle_to_point(pos)
+
+	return -angleget

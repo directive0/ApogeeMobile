@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://assets/planet.png" type="Texture" id=1]
+
+[node name="asteroid" type="Sprite"]
+position = Vector2( 3057.71, 2.46082 )
+texture = ExtResource( 1 )

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://indicator.gd" type="Script" id=1]
 [ext_resource path="res://assets/ring.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://assets/target.png" type="Texture" id=4]
 [ext_resource path="res://assets/gravity.png" type="Texture" id=5]
 [ext_resource path="res://assets/arrow.png" type="Texture" id=6]
+[ext_resource path="res://assets/crosshair036.png" type="Texture" id=7]
 
 [node name="Indicator" type="Node2D"]
 rotation = 1.5708
@@ -25,3 +26,8 @@ texture = ExtResource( 5 )
 
 [node name="arrow" type="Sprite" parent="."]
 texture = ExtResource( 6 )
+
+[node name="target_reticule" type="Sprite" parent="."]
+self_modulate = Color( 1, 0.819608, 0, 0.580392 )
+scale = Vector2( 1.95317, 1.95317 )
+texture = ExtResource( 7 )

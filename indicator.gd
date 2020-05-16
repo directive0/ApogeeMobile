@@ -13,25 +13,27 @@ func _ready():
 	
 	if is_network_master():
 		visible = true
-		pass
+
 
 	default = get_scale()
 	subject = get_parent()
 	camera = subject.get_node("Camera2D")
 	set_as_toplevel(true)
-	pass # Replace with function body.
+
 
 func pointing():
 	return subject.get_rotation()
 
-
 func target():
-	pass
-
+	var target_loc = subject.target.global_position
+	var rotater = target_loc.angle_to_point(subject.position) - deg2rad(0)
+	$target_reticule.set_as_toplevel(true)
+	$target_reticule.position = subject.target.get_global_position()
+	return rotater
+	
 func heading():
 	var motion = subject.motion
 	var origin = Vector2()
-	print(subject)
 	var rotater = motion.angle_to_point(origin)
 	return rotater
 
@@ -51,13 +53,17 @@ func _process(delta):
 		$heading.set_rotation(heading())
 		$arrow.set_rotation(pointing())
 		$gravity.set_rotation(gravity())
-
+		$target.set_rotation(target())
 	
 	#turns the heading arrow on when zoomed out, and removes it when zoomed in
 	if camera.get_zoom().y > 6:
 		$arrow.set_visible(true)
+		$target_reticule.set_visible(true)
 		set_scale((camera.get_zoom() / Vector2(6,6)) * default)
+		$target_reticule.set_scale((camera.get_zoom() / Vector2(6,6)) * default)
 	else:
 		$arrow.set_visible(false)
+		$target_reticule.set_visible(false)
+		$target_reticule.set_scale(default)
 		set_scale(default)
 

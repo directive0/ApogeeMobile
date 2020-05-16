@@ -11,7 +11,7 @@ func _ready():
 	randomize()
 	
 	var randrotate = randi()%361+1
-	print(randrotate)
+	#print(randrotate)
 	set_rotation_degrees(randrotate)
 	pass # Replace with function body.
 
@@ -29,7 +29,7 @@ func draw_orbit():
 	else:
 		$orbit.set_width(default)
 	#print(target)
-	var target = $Sprite.get_position()
+	var target = $planet.get_position()
 	var resolution = 360
 	var ring = []
 	var UP = Vector3(0,1,0)
