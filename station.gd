@@ -5,32 +5,34 @@ var lastcheck = false
 var generating = false
 var from_player
 var fuel = 100
+var hull = 100
 
 func _ready():
 	$expire.start()
 
 func _physics_process(delta):
-	var touching = $Area2D.get_overlapping_areas()
-	var orbiting = 0
+	if is_network_master():
+		var touching = $Area2D.get_overlapping_areas()
+		var orbiting = 0
+		
+		for body in touching:
+			if body.is_in_group("planet"):
 	
-	for body in touching:
-		if body.is_in_group("planet"):
-
-			orbiting += 1
-			
-	if orbiting > 0:
-		if lastcheck == false:
-			print("planet detected!")
-			$expire.stop()
-			generating = true
-			$generate.start()
-			lastcheck = true
-	else:
-		if lastcheck == true:
-			print("no planet detected!")
-			$generate.stop()
-			$expire.start()		
-			lastcheck = false
+				orbiting += 1
+				
+		if orbiting > 0:
+			if lastcheck == false:
+				#print("planet detected!")
+				$expire.stop()
+				generating = true
+				$generate.start()
+				lastcheck = true
+		else:
+			if lastcheck == true:
+				#print("no planet detected!")
+				$generate.stop()
+				$expire.start()		
+				lastcheck = false
 
 func done():
 	queue_free()

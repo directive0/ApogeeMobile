@@ -4,32 +4,20 @@
 [ext_resource path="res://assets/planet.png" type="Texture" id=2]
 
 [sub_resource type="CircleShape2D" id=1]
-
-custom_solver_bias = 0.0
 radius = 3017.53
 
 [node name="orbit" type="Node2D"]
 script = ExtResource( 1 )
-_sections_unfolded = [ "Transform" ]
-speed = 3.0
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 579, 0 )
 scale = Vector2( 0.0640272, 0.0640272 )
 texture = ExtResource( 2 )
-_sections_unfolded = [ "Transform" ]
 
 [node name="Area2D" type="Area2D" parent="Sprite"]
-input_pickable = true
 space_override = 4
 gravity_point = true
-gravity_vec = Vector2( 0, 1 )
 gravity = 60.0
-linear_damp = 0.1
-angular_damp = 1.0
-audio_bus_override = false
-audio_bus_name = "Master"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite/Area2D"]
 shape = SubResource( 1 )
-

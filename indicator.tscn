@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://indicator.gd" type="Script" id=1]
+[ext_resource path="res://script/indicator.gd" type="Script" id=1]
 [ext_resource path="res://assets/ring.png" type="Texture" id=2]
 [ext_resource path="res://assets/heading.png" type="Texture" id=3]
 [ext_resource path="res://assets/target.png" type="Texture" id=4]
@@ -25,6 +25,7 @@ texture = ExtResource( 4 )
 texture = ExtResource( 5 )
 
 [node name="arrow" type="Sprite" parent="."]
+scale = Vector2( 0.452386, 0.452386 )
 texture = ExtResource( 6 )
 
 [node name="target_reticule" type="Sprite" parent="."]

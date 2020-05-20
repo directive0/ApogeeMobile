@@ -1,9 +1,56 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://scenes/Indicator.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/weapon_select.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/VCR_Small.tres" type="DynamicFont" id=2]
 [ext_resource path="res://script/control_panel.gd" type="Script" id=3]
-[ext_resource path="res://script/Indicator.gd" type="Script" id=4]
+[ext_resource path="res://script/Vitals_Indicator.gd" type="Script" id=4]
+[ext_resource path="res://assets/topbar.png" type="Texture" id=5]
+[ext_resource path="res://assets/circleprogressunder.png" type="Texture" id=6]
+[ext_resource path="res://assets/circleprogress.png" type="Texture" id=7]
+[ext_resource path="res://script/UI_Overlay.tres.gd" type="Script" id=8]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends VBoxContainer
+export(int, \"velocity\", \"damage\", \"fuel\") var indicator_type
+var subject
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+func velocity():
+	subject = get_tree().get_nodes_in_group(\"player\")[0]
+	if has_node(\"label\"):
+		var velo = sqrt(pow(subject.current_motion[0],2)+pow(subject.current_motion[1],2))
+		print(velo)
+		$label.set_text(str(int(velo)))
+
+func fuel():
+	subject = get_tree().get_nodes_in_group(\"player\")[0]
+	if has_node(\"label\"):
+		$label.set_text(str(subject.fuel))
+	if has_node(\"progress\"):
+		$progress.value = subject.fuel
+#	pass
+func damage():
+	subject = get_tree().get_nodes_in_group(\"player\")[0]
+	if has_node(\"label\"):
+		$label.set_text(str(subject.hull))
+	if has_node(\"progress\"):
+		$progress.value = subject.hull
+# Called when the node enters the scene tree for the first time.
+func _process(delta):
+	if is_network_master():
+		if indicator_type == 0:
+			velocity()
+		if indicator_type == 1:
+			damage()
+		if indicator_type == 2:
+			fuel()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+"
 
 [node name="UI_Overlay" type="CanvasLayer"]
 script = ExtResource( 3 )
@@ -27,14 +74,14 @@ margin_right = 1920.0
 margin_bottom = 136.0
 size_flags_vertical = 3
 
-[node name="ColorRect" type="ColorRect" parent="Control/VBoxContainer/topbar"]
+[node name="TextureRect" type="TextureRect" parent="Control/VBoxContainer/topbar"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 2.03955
-margin_top = -4.07916
-margin_right = 2.03955
-margin_bottom = -4.07916
-color = Color( 0.992157, 0.74902, 0.0156863, 0.0941176 )
+margin_right = -4.0
+margin_bottom = 48.0
+rect_scale = Vector2( 1.0022, 1.4 )
+texture = ExtResource( 5 )
+expand = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -42,48 +89,67 @@ __meta__ = {
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer/topbar"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_top = 20.0
+margin_bottom = 78.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Indicator" parent="Control/VBoxContainer/topbar/HBoxContainer" instance=ExtResource( 1 )]
-margin_right = 637.0
-margin_bottom = 136.0
-
-[node name="Indicator3" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer"]
-modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
-margin_left = 641.0
-margin_right = 1278.0
-margin_bottom = 136.0
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer"]
+margin_right = 380.0
+margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 4 )
+
+[node name="Indicator6" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer"]
+margin_right = 188.0
+margin_bottom = 214.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-indicator_type = 1
 
-[node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/Indicator3"]
-margin_top = 4.0
-margin_right = 637.0
-margin_bottom = 37.0
+[node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator6"]
+margin_right = 188.0
+margin_bottom = 33.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
 custom_fonts/font = ExtResource( 2 )
-text = "Damage"
+custom_colors/font_color = Color( 0.984314, 0.784314, 0.00392157, 1 )
+text = "Velocity"
 align = 1
 valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/Indicator3"]
-margin_top = 50.0
-margin_right = 637.0
-margin_bottom = 83.0
-size_flags_horizontal = 3
-size_flags_vertical = 6
+[node name="progress" type="TextureProgress" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator6"]
+modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
+margin_left = 24.0
+margin_top = 37.0
+margin_right = 164.0
+margin_bottom = 177.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 4
+size_flags_vertical = 3
+max_value = 1200.0
+value = 50.0
+texture_under = ExtResource( 6 )
+texture_progress = ExtResource( 7 )
+fill_mode = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator6"]
+margin_top = 181.0
+margin_right = 188.0
+margin_bottom = 214.0
+size_flags_vertical = 3
 custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.984314, 0.784314, 0.00392157, 1 )
 text = "Test 100"
 align = 1
 valign = 1
@@ -91,18 +157,154 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ProgressBar" type="ProgressBar" parent="Control/VBoxContainer/topbar/HBoxContainer/Indicator3"]
-margin_top = 92.0
-margin_right = 637.0
-margin_bottom = 106.0
+[node name="Indicator7" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer"]
+margin_left = 192.0
+margin_right = 380.0
+margin_bottom = 214.0
 size_flags_horizontal = 3
-size_flags_vertical = 2
+size_flags_vertical = 3
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Indicator4" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer"]
+[node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator7"]
+margin_right = 188.0
+margin_bottom = 33.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.984314, 0.784314, 0.00392157, 1 )
+text = "Velocity"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="progress" type="TextureProgress" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator7"]
 modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
-margin_left = 1282.0
+margin_left = 24.0
+margin_top = 37.0
+margin_right = 164.0
+margin_bottom = 177.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 4
+size_flags_vertical = 3
+max_value = 1200.0
+value = 50.0
+texture_under = ExtResource( 6 )
+texture_progress = ExtResource( 7 )
+fill_mode = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator7"]
+margin_top = 181.0
+margin_right = 188.0
+margin_bottom = 214.0
+size_flags_vertical = 3
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.984314, 0.784314, 0.00392157, 1 )
+text = "Test 100"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Control3" type="Control" parent="Control/VBoxContainer/topbar/HBoxContainer"]
+margin_left = 384.0
+margin_right = 764.0
+margin_bottom = 214.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="Control/VBoxContainer/topbar/HBoxContainer"]
+margin_left = 768.0
+margin_right = 1148.0
+margin_bottom = 214.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="weapon_select" parent="Control/VBoxContainer/topbar/HBoxContainer/Control" instance=ExtResource( 1 )]
+modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
+
+[node name="Control2" type="Control" parent="Control/VBoxContainer/topbar/HBoxContainer"]
+margin_left = 1152.0
+margin_right = 1532.0
+margin_bottom = 214.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer"]
+margin_left = 1536.0
 margin_right = 1920.0
-margin_bottom = 136.0
+margin_bottom = 214.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Indicator5" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2"]
+margin_right = 190.0
+margin_bottom = 214.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+indicator_type = 1
+
+[node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator5"]
+margin_right = 190.0
+margin_bottom = 33.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.984314, 0.784314, 0.00392157, 1 )
+text = "Hull"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="progress" type="TextureProgress" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator5"]
+modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
+margin_left = 25.0
+margin_top = 37.0
+margin_right = 165.0
+margin_bottom = 177.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 4
+size_flags_vertical = 3
+value = 50.0
+texture_under = ExtResource( 6 )
+texture_progress = ExtResource( 7 )
+fill_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator5"]
+margin_top = 181.0
+margin_right = 190.0
+margin_bottom = 214.0
+size_flags_vertical = 3
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.984314, 0.784314, 0.00392157, 1 )
+text = "Test 100"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Indicator4" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2"]
+margin_left = 194.0
+margin_right = 384.0
+margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 4 )
@@ -111,13 +313,13 @@ __meta__ = {
 }
 indicator_type = 2
 
-[node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/Indicator4"]
-margin_top = 4.0
-margin_right = 638.0
-margin_bottom = 37.0
+[node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator4"]
+margin_right = 190.0
+margin_bottom = 33.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
 custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.984314, 0.784314, 0.00392157, 1 )
 text = "Fuel"
 align = 1
 valign = 1
@@ -125,26 +327,36 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/Indicator4"]
-margin_top = 50.0
-margin_right = 638.0
-margin_bottom = 83.0
-size_flags_horizontal = 3
-size_flags_vertical = 6
+[node name="progress" type="TextureProgress" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator4"]
+modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
+margin_left = 25.0
+margin_top = 37.0
+margin_right = 165.0
+margin_bottom = 177.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 4
+size_flags_vertical = 3
+value = 50.0
+texture_under = ExtResource( 6 )
+texture_progress = ExtResource( 7 )
+fill_mode = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator4"]
+margin_top = 181.0
+margin_right = 190.0
+margin_bottom = 214.0
+size_flags_vertical = 3
 custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.984314, 0.784314, 0.00392157, 1 )
 text = "Test 100"
 align = 1
 valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="ProgressBar" type="ProgressBar" parent="Control/VBoxContainer/topbar/HBoxContainer/Indicator4"]
-margin_top = 92.0
-margin_right = 638.0
-margin_bottom = 106.0
-size_flags_horizontal = 3
-size_flags_vertical = 2
 
 [node name="midbar" type="HBoxContainer" parent="Control/VBoxContainer"]
 margin_top = 140.0

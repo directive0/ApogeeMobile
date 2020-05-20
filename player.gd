@@ -20,6 +20,7 @@ var missile_index = 0
 var spinforce = 10
 var brake_spin = 0.1
 var rotvel = 0
+var loaded_weapon = 0
 
 
 # Ship status variables.
@@ -44,6 +45,7 @@ var min_zoom = 0.01
 var vostok_hull = load("res://ships/vostok.tscn")
 var dragon_hull = load("res://ships/dragon.tscn")
 var station_object = preload("res://station.tscn")
+var missile_object = preload("res://scenes/missile.tscn")
 var explosion_object = preload("res://scenes/explosion.tscn")
 
 var ship_name = ""
@@ -71,7 +73,12 @@ sync func explode():
 
 # Use sync because it will be called everywhere
 sync func setup_bomb(bomb_name, pos, by_who):
-	var bomb = station_object.instance()
+	var bomb
+	if loaded_weapon == 0:
+		bomb = missile_object.instance()
+	if loaded_weapon == 1:
+		bomb = station_object.instance()
+		
 	bomb.set_name(bomb_name) # Ensure unique name for the bomb
 	bomb.position = pos
 	bomb.from_player = by_who
@@ -93,6 +100,10 @@ func _ready():
 		add_to_group("player")
 	else:
 		add_to_group("target")
+		$UI_Overlay.queue_free()
+		$Camera2D.queue_free()
+		$Indicator.queue_free()
+		$path_tracker.qu
 
 	change_shiptype(ship_type)
 
@@ -137,11 +148,11 @@ func _physics_process(delta):
 			# ------------------------------------------------------------------------
 	
 			# handles weapons --------------------------------------------------------
-			var bombing = Input.is_action_pressed("set_bomb")
+			var firing = Input.is_action_pressed("fire_weapon")
 	
 	
 			#Checks to see if a bomb is not already being deployed
-			if bombing and not prev_bombing:
+			if firing and not prev_bombing:
 				#if not then make a new bomb with a name made of the ships name and the unique ID of the bomb
 				var bomb_name = get_name() + str(bomb_index)
 	
@@ -149,7 +160,7 @@ func _physics_process(delta):
 				var bomb_rot = rotation
 				rpc("setup_bomb", bomb_name, bomb_pos, get_tree().get_network_unique_id())
 	
-			prev_bombing = bombing
+			prev_bombing = firing
 			# ------------------------------------------------------------------------
 			
 			# transfer the information for this ship to the server info to be used for puppets on other machines
@@ -248,9 +259,9 @@ func zoom(delta):
 		zoom = max_zoom
 	
 	var adjust = Vector2(zoom,zoom)
-	if Input.is_action_pressed("zoom_out"):
+	if Input.is_action_pressed("zoom_out") or Input.is_action_just_released("zoom_out"):
 		zoom += zoomit
-	if Input.is_action_pressed("zoom_in"):
+	if Input.is_action_pressed("zoom_in") or Input.is_action_just_released("zoom_in"):
 		zoom -= zoomit
 	
 	$Camera2D.set_zoom(adjust)
@@ -301,8 +312,8 @@ func launch_missile():
 		# ------------------------------------------------------------------------
 
 func come_to_heading(heading):
-	#print("desired heading in degs: ", rad2deg(heading))
-	#print("desired heading in rads:",heading)
+
+	# if the heading we need to come to does not equal our current rotation
 	var degangle = get_facing()
 	var difference = abs(heading - degangle)
 
@@ -330,31 +341,19 @@ func come_to_heading(heading):
 	return rotvel
 
 func auto_brake():
-	var anglemotion = get_angle(false)
-	var desired_angle = fmod((anglemotion + PI),deg2rad(360.0))
-	print(get_facing()," + ",desired_angle)
+	
+	var motion = current_motion
+	var origin = Vector2()
+	var rotater = motion.angle_to_point(origin)
+	
+	var desired_angle = origin.angle_to_point(motion)
+	#print(get_facing()," + ",desired_angle)
 	if get_facing() != desired_angle:
 		come_to_heading(desired_angle)
 	return rotvel
 
 func get_facing():
 	var facing = get_rotation()
-
-	# constrain direction ship is facing to a 360° arc
-	#if facing < 0.0:
-		#facing = deg2rad(180) + (deg2rad(180) - (facing * -1))
+	#print("facing = ", facing)
 	return facing
 
-func get_angle(inverse = false):
-	var curvel = get_linear_velocity().normalized()
-
-	# collect our motion vectors into easy variables
-	var x = curvel.x
-	var y = curvel.y
-	
-	var velo = Vector2(curvel.x,curvel.y)
-	var pos = Vector2(0,0)
-	
-	var angleget = velo.angle_to_point(pos)
-
-	return -angleget

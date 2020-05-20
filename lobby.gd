@@ -79,16 +79,11 @@ func _on_start_pressed():
 	$sol_system.queue_free()
 
 
-func _on_okay_info_pressed():
-	$info_pane.set_visible(false)
-	pass # Replace with function body.
-
-
 func _on_info_button_pressed():
-	$info_pane.set_visible(true)
-	pass # Replace with function body.
+	add_child(load("res://scenes/info_pane.tscn").instance())
 
 
 func _on_gear_button_pressed():
-	$settings_pane.set_visible(true)
-	pass # Replace with function body.
+	add_child(load("res://scenes/settings_pane.tscn").instance())
+
+

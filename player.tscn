@@ -1,16 +1,16 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://player.gd" type="Script" id=1]
 [ext_resource path="res://path_tracker.gd" type="Script" id=2]
-[ext_resource path="res://montserrat.otf" type="DynamicFontData" id=3]
+[ext_resource path="res://assets/VCR_Small.tres" type="DynamicFont" id=3]
 [ext_resource path="res://label.gd" type="Script" id=4]
-[ext_resource path="res://20140221_ngc6992_poss2_czernetz.png" type="Texture" id=5]
+[ext_resource path="res://assets/20140221_ngc6992_poss2_czernetz.png" type="Texture" id=5]
 [ext_resource path="res://starground.png" type="Texture" id=6]
 [ext_resource path="res://indicator.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/UI_Overlay.tscn" type="PackedScene" id=8]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 2.75933, 1.72895 )
+extents = Vector2( 4.1409, 1.91562 )
 
 [sub_resource type="Animation" id=2]
 resource_name = "standing"
@@ -136,17 +136,15 @@ tracks/0/keys = {
 "values": [ 2, 6, 10, 14 ]
 }
 
-[sub_resource type="DynamicFont" id=8]
-size = 14
-font_data = ExtResource( 3 )
-
-[sub_resource type="CircleShape2D" id=9]
+[sub_resource type="CircleShape2D" id=8]
 radius = 2444.47
 
-[sub_resource type="CircleShape2D" id=10]
+[sub_resource type="CircleShape2D" id=9]
 radius = 34027.7
 
-[node name="player" type="RigidBody2D"]
+[node name="player" type="RigidBody2D" groups=[
+"player",
+]]
 mass = 5.0
 can_sleep = false
 linear_damp = 0.0
@@ -192,7 +190,7 @@ margin_right = 167.0
 margin_bottom = 61.0
 size_flags_horizontal = 2
 size_flags_vertical = 0
-custom_fonts/font = SubResource( 8 )
+custom_fonts/font = ExtResource( 3 )
 text = "Player 1"
 align = 1
 script = ExtResource( 4 )
@@ -248,11 +246,11 @@ modulate = Color( 1, 0.819608, 0, 0.580392 )
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="shortrange"]
-shape = SubResource( 9 )
+shape = SubResource( 8 )
 
 [node name="longrange" type="Area2D" parent="."]
 visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="longrange"]
-shape = SubResource( 10 )
+shape = SubResource( 9 )
 [connection signal="timeout" from="path_tracker/Timer" to="path_tracker" method="_on_Timer_timeout"]

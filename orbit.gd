@@ -20,14 +20,15 @@ func _process(delta):
 	camera = get_tree().get_nodes_in_group("camera")[0]
 	draw_orbit()
 	set_rotation_degrees(rotate)
+	#rint("planet rotation is ", rotate)
 	rotate -= (speed * adjust) * delta
 #	pass
 
 func draw_orbit():
-	if camera.get_zoom().y > 6:
-		$orbit.set_width((camera.get_zoom().y / 6) * default)
-	else:
-		$orbit.set_width(default)
+	#if camera.get_zoom().y > 6:
+	$orbit.width = camera.get_zoom().y
+	#else:
+	#	$orbit.set_width(default)
 	#print(target)
 	var target = $planet.get_position()
 	var resolution = 360

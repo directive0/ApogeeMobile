@@ -15,8 +15,8 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	if is_network_master():
-		subject = get_tree().get_nodes_in_group("player")[0]
-		$Control/VBoxContainer/topbar/HBoxContainer/Indicator/label.set_text(str(sqrt(pow(subject.current_motion[0],2)+pow(subject.current_motion[1],2))))
+#func _process(delta):
+	#if is_network_master():
+	#	subject = get_tree().get_nodes_in_group("player")[0]
+	#	$Control/VBoxContainer/topbar/HBoxContainer/Indicator/label.set_text(str(sqrt(pow(subject.current_motion[0],2)+pow(subject.current_motion[1],2))))
 #	pass

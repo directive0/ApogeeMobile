@@ -3,11 +3,11 @@ extends Node
 # Game settings ----------------------------------------------------------------
 
 # Set the global settings
-var volume = 0
+var music_volume = 0
+var sfx_volume = 100
 
 # try to determine whether we are on a mobile or desktop device (for controls)
 var device_type = 0
-
 
 # Network parameters -----------------------------------------------------------
 # Default game port
