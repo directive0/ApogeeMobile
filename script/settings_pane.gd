@@ -8,6 +8,7 @@ extends ColorRect
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$window_body/settings/VBoxContainer/music_slider.value = gamestate.music_volume
 	pass # Replace with function body.
 
 

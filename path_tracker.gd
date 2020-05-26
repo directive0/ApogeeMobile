@@ -3,6 +3,8 @@ extends Line2D
 var subject
 var point_array = []
 
+var zoompoint = 6
+
 var camera
 var default
 
@@ -15,7 +17,7 @@ func _ready():
 	default = get_width()
 	subject = get_parent()
 	set_as_toplevel(true)
-	camera = get_parent().get_node("Camera2D")
+	camera = get_tree().get_nodes_in_group("camera")[0]
 	
 	pass # Replace with function body.
 
@@ -23,8 +25,8 @@ func _ready():
 func _process(delta):
 	set_points(point_array)
 
-	if camera.get_zoom().y > 6:
-		set_width((camera.get_zoom().y / 6) * default)
+	if camera.get_zoom().y > zoompoint:
+		set_width((camera.get_zoom().y / zoompoint) * default)
 	else:
 		set_width(default)
 #	pass

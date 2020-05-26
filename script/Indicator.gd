@@ -4,6 +4,7 @@ var camera
 var targets
 var target
 var default
+var zoomset = 4
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -56,11 +57,11 @@ func _process(delta):
 		$target.set_rotation(target())
 	
 	#turns the heading arrow on when zoomed out, and removes it when zoomed in
-	if camera.get_zoom().y > 6:
+	if camera.get_zoom().y > zoomset:
 		$arrow.set_visible(true)
 		$target_reticule.set_visible(true)
-		set_scale((camera.get_zoom() / Vector2(6,6)) * default)
-		$target_reticule.set_scale((camera.get_zoom() / Vector2(6,6)) * default)
+		set_scale((camera.get_zoom() / Vector2(zoomset,zoomset)) * default)
+		$target_reticule.set_scale((camera.get_zoom() / Vector2(zoomset,zoomset)) * default)
 	else:
 		$arrow.set_visible(false)
 		$target_reticule.set_visible(false)

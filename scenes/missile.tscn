@@ -1,12 +1,8 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://scenes/HUD_reticule.tscn" type="PackedScene" id=1]
-[ext_resource path="res://script/missile.gd" type="Script" id=2]
 [ext_resource path="res://assets/missile.png" type="Texture" id=3]
 [ext_resource path="res://assets/explosion.png" type="Texture" id=4]
 [ext_resource path="res://assets/ring.png" type="Texture" id=5]
-[ext_resource path="res://assets/arrow.png" type="Texture" id=6]
-[ext_resource path="res://assets/crosshair051.png" type="Texture" id=7]
 
 [sub_resource type="Animation" id=1]
 length = 10.0
@@ -164,30 +160,6 @@ tracks/9/keys = {
 "update": 1,
 "values": [ false ]
 }
-tracks/10/type = "value"
-tracks/10/path = NodePath("HUD_reticule:texture")
-tracks/10/interp = 0
-tracks/10/loop_wrap = true
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/keys = {
-"times": PoolRealArray( 0, 0.05 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 1,
-"values": [ ExtResource( 6 ), ExtResource( 7 ) ]
-}
-tracks/11/type = "value"
-tracks/11/path = NodePath("HUD_reticule:scale")
-tracks/11/interp = 0
-tracks/11/loop_wrap = true
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/keys = {
-"times": PoolRealArray( 0, 0.05 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Vector2( 0.142073, 0.18048 ), Vector2( 0.2, 0.2 ) ]
-}
 
 [sub_resource type="CircleShape2D" id=3]
 radius = 188.417
@@ -199,20 +171,10 @@ radius = 18.078
 
 [sub_resource type="CircleShape2D" id=6]
 
-[node name="missile" type="RigidBody2D"]
-collision_layer = 6
-collision_mask = 6
-mass = 6.0
-can_sleep = false
-linear_damp = 0.0
-angular_damp = 0.0
-script = ExtResource( 2 )
-__meta__ = {
-"_editor_description_": ""
-}
+[node name="missile" type="Node2D"]
 
 [node name="anim" type="AnimationPlayer" parent="."]
-autoplay = "anim"
+autoplay = "explode"
 anims/anim = SubResource( 1 )
 anims/explode = SubResource( 2 )
 
@@ -224,15 +186,13 @@ collision_mask = 15
 shape = SubResource( 3 )
 
 [node name="sprite" type="Sprite" parent="."]
+visible = false
 scale = Vector2( 0.353838, 0.353838 )
 texture = ExtResource( 3 )
 region_rect = Rect2( 144, 0, 48, 48 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 4 )
-
-[node name="HUD_reticule" parent="." instance=ExtResource( 1 )]
-scale = Vector2( 0.142073, 0.18048 )
 
 [node name="nuke_wave" type="Sprite" parent="."]
 scale = Vector2( 1e-05, 1e-05 )
@@ -257,6 +217,6 @@ collision_mask = 7
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="pushback"]
 shape = SubResource( 6 )
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 [connection signal="area_entered" from="detonator" to="." method="_on_detonator_area_entered"]
-[connection signal="body_entered" from="detonator" to="." method="_on_Area2D_body_entered"]
-[connection signal="body_exited" from="detonator" to="." method="_on_Area2D_body_exited"]

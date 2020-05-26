@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://scenes/weapon_select.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/VCR_Small.tres" type="DynamicFont" id=2]
@@ -8,8 +8,11 @@
 [ext_resource path="res://assets/circleprogressunder.png" type="Texture" id=6]
 [ext_resource path="res://assets/circleprogress.png" type="Texture" id=7]
 [ext_resource path="res://script/UI_Overlay.tres.gd" type="Script" id=8]
+[ext_resource path="res://assets/dpad.png" type="Texture" id=9]
+[ext_resource path="res://scenes/gear_button.tscn" type="PackedScene" id=11]
+[ext_resource path="res://assets/square.png" type="Texture" id=12]
 
-[sub_resource type="GDScript" id=2]
+[sub_resource type="GDScript" id=1]
 script/source = "extends VBoxContainer
 export(int, \"velocity\", \"damage\", \"fuel\") var indicator_type
 var subject
@@ -52,12 +55,22 @@ func _process(delta):
 #	pass
 "
 
+[sub_resource type="CircleShape2D" id=5]
+radius = 525.0
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 525.0
+
+[sub_resource type="CircleShape2D" id=6]
+radius = 525.0
+
 [node name="UI_Overlay" type="CanvasLayer"]
 script = ExtResource( 3 )
 
 [node name="Control" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -65,13 +78,15 @@ __meta__ = {
 [node name="VBoxContainer" type="VBoxContainer" parent="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="topbar" type="Control" parent="Control/VBoxContainer"]
-margin_right = 1920.0
+margin_right = 2220.0
 margin_bottom = 136.0
+mouse_filter = 2
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Control/VBoxContainer/topbar"]
@@ -96,13 +111,13 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer"]
-margin_right = 380.0
+margin_right = 440.0
 margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Indicator6" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer"]
-margin_right = 188.0
+margin_right = 440.0
 margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -112,7 +127,7 @@ __meta__ = {
 }
 
 [node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator6"]
-margin_right = 188.0
+margin_right = 440.0
 margin_bottom = 33.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
@@ -127,9 +142,9 @@ __meta__ = {
 
 [node name="progress" type="TextureProgress" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator6"]
 modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
-margin_left = 24.0
+margin_left = 150.0
 margin_top = 37.0
-margin_right = 164.0
+margin_right = 290.0
 margin_bottom = 177.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 4
@@ -145,7 +160,7 @@ __meta__ = {
 
 [node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer/Indicator6"]
 margin_top = 181.0
-margin_right = 188.0
+margin_right = 440.0
 margin_bottom = 214.0
 size_flags_vertical = 3
 custom_fonts/font = ExtResource( 2 )
@@ -158,6 +173,7 @@ __meta__ = {
 }
 
 [node name="Indicator7" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer"]
+visible = false
 margin_left = 192.0
 margin_right = 380.0
 margin_bottom = 214.0
@@ -215,15 +231,15 @@ __meta__ = {
 }
 
 [node name="Control3" type="Control" parent="Control/VBoxContainer/topbar/HBoxContainer"]
-margin_left = 384.0
-margin_right = 764.0
+margin_left = 444.0
+margin_right = 884.0
 margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Control" type="Control" parent="Control/VBoxContainer/topbar/HBoxContainer"]
-margin_left = 768.0
-margin_right = 1148.0
+margin_left = 888.0
+margin_right = 1328.0
 margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -232,32 +248,32 @@ size_flags_vertical = 3
 modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
 
 [node name="Control2" type="Control" parent="Control/VBoxContainer/topbar/HBoxContainer"]
-margin_left = 1152.0
-margin_right = 1532.0
+margin_left = 1332.0
+margin_right = 1772.0
 margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer"]
-margin_left = 1536.0
-margin_right = 1920.0
+margin_left = 1776.0
+margin_right = 2220.0
 margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Indicator5" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2"]
-margin_right = 190.0
+margin_right = 220.0
 margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = SubResource( 2 )
+script = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 indicator_type = 1
 
 [node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator5"]
-margin_right = 190.0
+margin_right = 220.0
 margin_bottom = 33.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
@@ -272,9 +288,9 @@ __meta__ = {
 
 [node name="progress" type="TextureProgress" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator5"]
 modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
-margin_left = 25.0
+margin_left = 40.0
 margin_top = 37.0
-margin_right = 165.0
+margin_right = 180.0
 margin_bottom = 177.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 4
@@ -289,7 +305,7 @@ __meta__ = {
 
 [node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator5"]
 margin_top = 181.0
-margin_right = 190.0
+margin_right = 220.0
 margin_bottom = 214.0
 size_flags_vertical = 3
 custom_fonts/font = ExtResource( 2 )
@@ -302,8 +318,8 @@ __meta__ = {
 }
 
 [node name="Indicator4" type="VBoxContainer" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2"]
-margin_left = 194.0
-margin_right = 384.0
+margin_left = 224.0
+margin_right = 444.0
 margin_bottom = 214.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -314,7 +330,7 @@ __meta__ = {
 indicator_type = 2
 
 [node name="item_heading" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator4"]
-margin_right = 190.0
+margin_right = 220.0
 margin_bottom = 33.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
@@ -329,9 +345,9 @@ __meta__ = {
 
 [node name="progress" type="TextureProgress" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator4"]
 modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
-margin_left = 25.0
+margin_left = 40.0
 margin_top = 37.0
-margin_right = 165.0
+margin_right = 180.0
 margin_bottom = 177.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 4
@@ -346,7 +362,7 @@ __meta__ = {
 
 [node name="label" type="Label" parent="Control/VBoxContainer/topbar/HBoxContainer/HBoxContainer2/Indicator4"]
 margin_top = 181.0
-margin_right = 190.0
+margin_right = 220.0
 margin_bottom = 214.0
 size_flags_vertical = 3
 custom_fonts/font = ExtResource( 2 )
@@ -360,35 +376,102 @@ __meta__ = {
 
 [node name="midbar" type="HBoxContainer" parent="Control/VBoxContainer"]
 margin_top = 140.0
-margin_right = 1920.0
+margin_right = 2220.0
 margin_bottom = 940.0
 rect_min_size = Vector2( 0, 800 )
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="engine" type="Control" parent="Control/VBoxContainer/midbar"]
-margin_right = 637.0
+margin_right = 737.0
 margin_bottom = 800.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="middle" type="Control" parent="Control/VBoxContainer/midbar"]
-margin_left = 641.0
-margin_right = 1278.0
+margin_left = 741.0
+margin_right = 1478.0
 margin_bottom = 800.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="control" type="Control" parent="Control/VBoxContainer/midbar"]
-margin_left = 1282.0
-margin_right = 1920.0
+margin_left = 1482.0
+margin_right = 2220.0
 margin_bottom = 800.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="botbar" type="Control" parent="Control/VBoxContainer"]
 margin_top = 944.0
-margin_right = 1920.0
+margin_right = 2220.0
 margin_bottom = 1080.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="direction" type="TextureRect" parent="Control/VBoxContainer/botbar"]
+modulate = Color( 0.984314, 0.784314, 0.00392157, 0.415686 )
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -477.87
+margin_top = -473.154
+margin_right = -5.87061
+margin_bottom = -1.15448
+rect_scale = Vector2( 0.910958, 0.910958 )
+mouse_filter = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="dpad" type="Sprite" parent="Control/VBoxContainer/botbar/direction"]
+position = Vector2( 236.022, 238.112 )
+scale = Vector2( 0.626456, 0.626456 )
+texture = ExtResource( 9 )
+
+[node name="left" type="TouchScreenButton" parent="Control/VBoxContainer/botbar/direction"]
+position = Vector2( 18, 77 )
+scale = Vector2( 0.140475, 0.300912 )
+shape = SubResource( 5 )
+passby_press = true
+action = "move_left"
+
+[node name="right" type="TouchScreenButton" parent="Control/VBoxContainer/botbar/direction"]
+position = Vector2( 305.999, 79.5133 )
+scale = Vector2( 0.14, 0.301 )
+shape = SubResource( 4 )
+passby_press = true
+action = "move_right"
+
+[node name="throttle" type="TouchScreenButton" parent="Control/VBoxContainer/botbar/direction"]
+position = Vector2( 392.932, 16.8325 )
+rotation = 1.5708
+scale = Vector2( 0.174, 0.301 )
+shape = SubResource( 6 )
+passby_press = true
+action = "move_up"
+
+[node name="gear button" parent="Control/VBoxContainer/botbar" instance=ExtResource( 11 )]
+modulate = Color( 0.282353, 0.223529, 0, 1 )
+
+[node name="Control" type="Control" parent="Control/VBoxContainer/botbar"]
+margin_left = 140.0
+margin_top = -130.0
+margin_right = 412.0
+margin_bottom = -1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="fire" type="TouchScreenButton" parent="Control/VBoxContainer/botbar"]
+modulate = Color( 0.984314, 0.784314, 0.00392157, 0.415686 )
+position = Vector2( 57.8109, -216.791 )
+scale = Vector2( 2.96368, 2.65604 )
+normal = ExtResource( 12 )
+action = "fire_weapon"

@@ -75,15 +75,18 @@ func refresh_lobby():
 
 func _on_start_pressed():
 	gamestate.begin_game()
-	$AudioStreamPlayer.stop()
-	$sol_system.queue_free()
+	#$AudioStreamPlayer.stop()
+	#$sol_system.queue_free()
 
 
 func _on_info_button_pressed():
 	add_child(load("res://scenes/info_pane.tscn").instance())
 
 
-func _on_gear_button_pressed():
-	add_child(load("res://scenes/settings_pane.tscn").instance())
 
 
+func _on_TextureButton_pressed():
+	gamestate.begin_game()
+	#$AudioStreamPlayer.stop()
+	#$sol_system.queue_free()
+	pass # Replace with function body.

@@ -7,14 +7,16 @@ var last_volume = 0
 
 
 # Called when the node enters the scene tree for the first time.
-#func _ready():
+func _ready():
+	set_volume_db(gamestate.music_volume)
+	last_volume = gamestate.music_volume
 	#pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if gamestate.music_volume != last_volume:
-		print("received request!")
+		#print("received request!")
 		set_volume_db(gamestate.music_volume)
 		last_volume = gamestate.music_volume
 #	pass

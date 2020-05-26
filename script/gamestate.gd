@@ -24,6 +24,8 @@ var player_ship = "Vostok"
 var players = {}
 var player_ships = {}
 
+var ready = false
+
 
 # Signals to let lobby GUI know what's going on
 signal player_list_changed()
@@ -90,10 +92,13 @@ remote func pre_start_game(spawn_points):
 	var world = load("res://sol.tscn").instance()
 	get_tree().get_root().add_child(world)
 
-	get_tree().get_root().get_node("lobby").hide()
+	get_tree().get_root().get_node("lobby").queue_free()
+
+	#get_tree().get_root().get_node("lobby").hide()
 
 	var player_scene = load("res://player.tscn")
 
+	# Puts all the players in their starting positions in the game.
 	for p_id in spawn_points:
 		var spawn_pos = world.get_node("spawn_points/" + str(spawn_points[p_id])).position
 		var player = player_scene.instance()
@@ -110,7 +115,7 @@ remote func pre_start_game(spawn_points):
 			player.set_player_name(players[p_id], player_ships[p_id])
 
 		world.get_node("players").add_child(player)
-
+		ready = true
 	# Set up score
 	#world.get_node("score").add_player(get_tree().get_network_unique_id(), player_name)
 	#for pn in players:

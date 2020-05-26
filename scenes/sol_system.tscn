@@ -8,19 +8,22 @@
 [ext_resource path="res://scenes/asteroid.tscn" type="PackedScene" id=6]
 [ext_resource path="res://scenes/star.tscn" type="PackedScene" id=7]
 [ext_resource path="res://scenes/dynamic_planet.tscn" type="PackedScene" id=8]
-[ext_resource path="res://script/music_player.gd" type="Script" id=9]
-[ext_resource path="res://assets/roche_limit.ogg" type="AudioStream" id=10]
+[ext_resource path="res://script/zoom_hide.gd" type="Script" id=9]
 
-[sub_resource type="CircleShape2D" id=1]
+[sub_resource type="StreamTexture" id=1]
+flags = 4
+load_path = "res://.import/grid2.png-c05e961df643ccf05f01d99f02caea03.stex"
+
+[sub_resource type="CircleShape2D" id=2]
 radius = 59739.5
 
-[sub_resource type="CapsuleShape2D" id=2]
+[sub_resource type="CapsuleShape2D" id=3]
 radius = 13.2742
 
 [node name="sol_system" type="Node2D"]
 
-[node name="TextureRect" type="TextureRect" parent="."]
-modulate = Color( 1, 1, 1, 0.0392157 )
+[node name="gridplane" type="TextureRect" parent="."]
+modulate = Color( 0.984314, 1, 1, 0.129412 )
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -30,14 +33,39 @@ margin_top = -44303.1
 margin_right = 78227.0
 margin_bottom = 44049.9
 rect_scale = Vector2( 1, 1.0005 )
+mouse_filter = 2
 texture = ExtResource( 1 )
 stretch_mode = 2
+script = ExtResource( 9 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+zoomset = 10
+
+[node name="gridplane2" type="TextureRect" parent="."]
+visible = false
+modulate = Color( 0.984314, 1, 1, 0.129412 )
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -75605.3
+margin_top = -43205.7
+margin_right = 81462.7
+margin_bottom = 45147.3
+rect_scale = Vector2( 5, 5 )
+mouse_filter = 2
+texture = SubResource( 1 )
+stretch_mode = 2
+script = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+zoomset = 10
 
 [node name="Area2D" type="Area2D" parent="."]
 visible = false
+input_pickable = false
 space_override = 1
 gravity_point = true
 gravity_distance_scale = 0.001
@@ -45,7 +73,7 @@ collision_layer = 3
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Sprite" parent="." instance=ExtResource( 2 )]
 visible = false
@@ -59,6 +87,7 @@ script = ExtResource( 3 )
 speed = 5.0
 
 [node name="orbit" parent="mercury" instance=ExtResource( 4 )]
+points = PoolVector2Array( -19499.9, -17836.9 )
 
 [node name="planet" parent="mercury" instance=ExtResource( 8 )]
 position = Vector2( 579, 0 )
@@ -145,9 +174,6 @@ object_name = "Jupiter"
 [node name="surface" parent="jupiter/planet" index="0"]
 visible = false
 
-[node name="gravity" parent="jupiter/planet" index="1"]
-visible = false
-
 [node name="planet" parent="jupiter/planet" index="3"]
 self_modulate = Color( 0.109804, 0.0666667, 0.0666667, 1 )
 
@@ -193,10 +219,11 @@ position = Vector2( 44950, 0 )
 scale = Vector2( 0.5, 0.5 )
 object_name = "Neptune"
 
+[node name="gravity" parent="neptune/planet" index="1"]
+visible = false
+
 [node name="planet" parent="neptune/planet" index="3"]
 self_modulate = Color( 0.0156863, 0.027451, 0.0509804, 1 )
-
-[node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="a_belt" type="Sprite" parent="."]
 self_modulate = Color( 0.435294, 0.435294, 0.435294, 0.145098 )
@@ -217,11 +244,11 @@ position = Vector2( 0, 0 )
 scale = Vector2( 0.0823702, 0.119784 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="asteroid"]
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 10 )
-script = ExtResource( 9 )
+[editable path="Star"]
+
+[editable path="mercury/planet"]
 
 [editable path="venus/planet"]
 

@@ -5,9 +5,9 @@ extends RigidBody2D
 const MOTION_SPEED = 90.0
 
 # these variables define the position of this object for all other peers
-slave var slave_pos = Vector2()
-slave var slave_motion = 0
-slave var slave_rotation = 0.0
+puppet var slave_pos = Vector2()
+puppet var slave_motion = 0
+puppet var slave_rotation = 0.0
 
 var object_name
 
@@ -23,14 +23,21 @@ var rotvel = 0
 var loaded_weapon = 0
 
 
+var hulltype 
+var exploded = false
+var burnrate = 0.01
+var fuel = 100
+var current_fuel
+var hull = 100
+var current_hull 
+
+
 # Ship status variables.
 var engine_on = false
 var slv_engine_on = false
-var hull = 100
-var hulltype 
-var fuel = 100
-var burnrate = 0.01
-var exploded = false
+
+
+
 
 export var stunned = false
 #export var test = false
@@ -43,7 +50,14 @@ var min_zoom = 0.01
 
 
 var vostok_hull = load("res://ships/vostok.tscn")
+var soyuz_hull
+var apollo_hull
 var dragon_hull = load("res://ships/dragon.tscn")
+var shenzhou_hull
+var spaceshuttle_hull
+
+
+
 var station_object = preload("res://station.tscn")
 var missile_object = preload("res://scenes/missile.tscn")
 var explosion_object = preload("res://scenes/explosion.tscn")
@@ -96,6 +110,7 @@ func _ready():
 	# checks to see if we are on the computer that is actually in control of this node.
 	if is_network_master():
 		$Camera2D._set_current(true)
+		$Camera2D.set_as_toplevel(true)
 		$Camera2D.add_to_group("camera")
 		add_to_group("player")
 	else:
@@ -103,7 +118,7 @@ func _ready():
 		$UI_Overlay.queue_free()
 		$Camera2D.queue_free()
 		$Indicator.queue_free()
-		$path_tracker.qu
+		$path_tracker.queue_free()
 
 	change_shiptype(ship_type)
 
@@ -218,6 +233,15 @@ func query_target():
 			target_index = 0
 	#print(targets)
 
+
+func rotate_left():
+	rotation = -spinforce
+	apply_torque_impulse(rotation)
+	
+func rotate_right():
+	rotation = spinforce
+	apply_torque_impulse(rotation)
+	
 func rotate_player():
 	var rotation = 0.0
 	if Input.is_action_pressed("move_left"):
@@ -236,6 +260,12 @@ func throttle():
 	else:
 		$main_hull/plume.set_visible(false)
 		
+		
+func burn():
+	var motion = 0
+	fuel -= burnrate
+	motion += 3
+	engine_on = true
 	
 func move_player():
 	var motion = 0
@@ -264,7 +294,7 @@ func zoom(delta):
 	if Input.is_action_pressed("zoom_in") or Input.is_action_just_released("zoom_in"):
 		zoom -= zoomit
 	
-	$Camera2D.set_zoom(adjust)
+	#$Camera2D.set_zoom(adjust)
 
 
 
@@ -357,3 +387,7 @@ func get_facing():
 	#print("facing = ", facing)
 	return facing
 
+func respawn():
+	current_fuel = fuel
+	current_hull = hull
+	pass

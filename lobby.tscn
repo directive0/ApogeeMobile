@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://lobby.gd" type="Script" id=1]
 [ext_resource path="res://shipoption.gd" type="Script" id=2]
@@ -8,13 +8,12 @@
 [ext_resource path="res://assets/VCR_Big.tres" type="DynamicFont" id=6]
 [ext_resource path="res://assets/VCR_Small.tres" type="DynamicFont" id=7]
 [ext_resource path="res://assets/square.png" type="Texture" id=8]
-[ext_resource path="res://scenes/sol_system.tscn" type="PackedScene" id=9]
+[ext_resource path="res://scenes/gear_button.tscn" type="PackedScene" id=9]
 [ext_resource path="res://assets/info.png" type="Texture" id=10]
 [ext_resource path="res://assets/lobby_of_the_gods.ogg" type="AudioStream" id=11]
 [ext_resource path="res://scenes/info_pane.tscn" type="PackedScene" id=12]
 [ext_resource path="res://assets/20140221_ngc6992_poss2_czernetz.png" type="Texture" id=13]
 [ext_resource path="res://stars_trans.png" type="Texture" id=14]
-[ext_resource path="res://assets/gear.png" type="Texture" id=15]
 [ext_resource path="res://scenes/settings_pane.tscn" type="PackedScene" id=16]
 [ext_resource path="res://script/music_player.gd" type="Script" id=17]
 
@@ -33,6 +32,7 @@ margin_left = 2.58209
 margin_top = -1.55499
 margin_right = 2.58203
 margin_bottom = -1.55493
+mouse_filter = 2
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource( 1 )
@@ -62,9 +62,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="sol_system" parent="." instance=ExtResource( 9 )]
-position = Vector2( 395.879, 492.081 )
-
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 anchor_left = 0.047
 anchor_top = 0.04
@@ -75,6 +72,7 @@ margin_top = 0.200005
 margin_right = 1211.93
 margin_bottom = 237.2
 rect_clip_content = false
+mouse_filter = 2
 custom_fonts/normal_font = ExtResource( 3 )
 custom_colors/default_color = Color( 1, 0.678431, 0, 1 )
 text = "Apogee"
@@ -171,6 +169,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "START!"
 
+[node name="TextureButton" type="TextureButton" parent="players/VBoxContainer/start"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="connect" type="ColorRect" parent="."]
 anchor_left = 0.976
 anchor_top = 0.353
@@ -191,6 +196,7 @@ margin_left = 5.0
 margin_top = 5.0
 margin_right = -5.0
 margin_bottom = -5.0
+mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -301,14 +307,9 @@ __meta__ = {
 [node name="error" type="AcceptDialog" parent="."]
 margin_right = 55.0
 margin_bottom = 58.0
+mouse_filter = 1
 size_flags_horizontal = 2
 size_flags_vertical = 2
-
-[node name="Camera2D" type="Camera2D" parent="." groups=[
-"camera",
-]]
-visible = false
-position = Vector2( 1427.03, 881.15 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 11 )
@@ -324,34 +325,28 @@ anchor_bottom = 1.0
 margin_top = -200.005
 margin_right = 200.0
 rect_scale = Vector2( 0.556974, 0.556974 )
+mouse_filter = 1
 texture_normal = ExtResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="gear_button" type="TextureButton" parent="."]
-self_modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
-anchor_left = 0.043
-anchor_top = 1.0
-anchor_right = 0.043
-anchor_bottom = 1.0
-margin_left = 132.636
-margin_top = -200.005
-margin_right = 644.636
-margin_bottom = 311.995
-rect_scale = Vector2( 0.216273, 0.216273 )
-texture_normal = ExtResource( 15 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="gear_button" parent="." instance=ExtResource( 9 )]
+modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
+margin_left = 224.0
+margin_top = 882.0
+margin_right = -1877.0
+margin_bottom = -87.0
 
 [node name="settings_pane" parent="." instance=ExtResource( 16 )]
 visible = false
+mouse_filter = 1
 
 [node name="info_pane" parent="." instance=ExtResource( 12 )]
 visible = false
+mouse_filter = 1
 [connection signal="pressed" from="players/VBoxContainer/start" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="players/VBoxContainer/start/TextureButton" to="." method="_on_TextureButton_pressed"]
 [connection signal="pressed" from="connect/VBoxContainer/host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="connect/VBoxContainer/join" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="info_button" to="." method="_on_info_button_pressed"]
-[connection signal="pressed" from="gear_button" to="." method="_on_gear_button_pressed"]

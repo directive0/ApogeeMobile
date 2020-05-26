@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://script/explosion.gd" type="Script" id=1]
 [ext_resource path="res://assets/spot.png" type="Texture" id=2]
+[ext_resource path="res://assets/explosive_decompression.wav" type="AudioStream" id=3]
 
 [sub_resource type="Gradient" id=1]
 offsets = PoolRealArray( 0, 0.0592593, 0.622222, 0.992593 )
@@ -67,3 +68,7 @@ randomness = 0.45
 local_coords = false
 process_material = SubResource( 6 )
 texture = ExtResource( 2 )
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 3 )
+autoplay = true
