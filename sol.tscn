@@ -44,44 +44,45 @@ scale = Vector2( 3.8811, 3.8811 )
 
 [node name="players" type="Node2D" parent="."]
 
-[node name="spawn_points" type="Node2D" parent="."]
+[node name="spawn_points2" type="Node2D" parent="."]
+visible = false
 position = Vector2( -1807.85, -684.739 )
 scale = Vector2( 4, 4 )
 
-[node name="0" type="Position2D" parent="spawn_points"]
+[node name="0" type="Position2D" parent="spawn_points2"]
 position = Vector2( 72, 72 )
 
-[node name="1" type="Position2D" parent="spawn_points"]
+[node name="1" type="Position2D" parent="spawn_points2"]
 position = Vector2( 264, 216 )
 
-[node name="2" type="Position2D" parent="spawn_points"]
+[node name="2" type="Position2D" parent="spawn_points2"]
 position = Vector2( 72, 456 )
 
-[node name="3" type="Position2D" parent="spawn_points"]
+[node name="3" type="Position2D" parent="spawn_points2"]
 position = Vector2( 360, 552 )
 
-[node name="4" type="Position2D" parent="spawn_points"]
+[node name="4" type="Position2D" parent="spawn_points2"]
 position = Vector2( 840, 360 )
 
-[node name="5" type="Position2D" parent="spawn_points"]
+[node name="5" type="Position2D" parent="spawn_points2"]
 position = Vector2( 456, 264 )
 
-[node name="6" type="Position2D" parent="spawn_points"]
+[node name="6" type="Position2D" parent="spawn_points2"]
 position = Vector2( 696, 264 )
 
-[node name="7" type="Position2D" parent="spawn_points"]
+[node name="7" type="Position2D" parent="spawn_points2"]
 position = Vector2( 744, 456 )
 
-[node name="8" type="Position2D" parent="spawn_points"]
+[node name="8" type="Position2D" parent="spawn_points2"]
 position = Vector2( 312, 456 )
 
-[node name="9" type="Position2D" parent="spawn_points"]
+[node name="9" type="Position2D" parent="spawn_points2"]
 position = Vector2( 696, 72 )
 
-[node name="10" type="Position2D" parent="spawn_points"]
+[node name="10" type="Position2D" parent="spawn_points2"]
 position = Vector2( 504, 72 )
 
-[node name="11" type="Position2D" parent="spawn_points"]
+[node name="11" type="Position2D" parent="spawn_points2"]
 position = Vector2( 2144.04, 226.818 )
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]

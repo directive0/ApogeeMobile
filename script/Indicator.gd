@@ -36,8 +36,12 @@ func heading():
 	var motion = subject.motion
 	var origin = Vector2()
 	var rotater = motion.angle_to_point(origin)
+	if subject.engine_on:
+		$arrow/plume.set_visible(true)
+	else:
+		$arrow/plume.set_visible(false)
 	return rotater
-
+		
 func gravity():
 	var gravity = subject.gravity.normalized()
 	var origin = Vector2()

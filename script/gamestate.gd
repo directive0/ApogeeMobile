@@ -3,7 +3,7 @@ extends Node
 # Game settings ----------------------------------------------------------------
 
 # Set the global settings
-var music_volume = 0
+var music_volume = -50
 var sfx_volume = 100
 
 # try to determine whether we are on a mobile or desktop device (for controls)
@@ -100,11 +100,13 @@ remote func pre_start_game(spawn_points):
 
 	# Puts all the players in their starting positions in the game.
 	for p_id in spawn_points:
-		var spawn_pos = world.get_node("spawn_points/" + str(spawn_points[p_id])).position
+		var spawn_pos = get_tree().get_nodes_in_group("spawn_point")[p_id].get_global_position()
+		print(spawn_pos)
+		#var spawn_pos = world.get_node("spawn_points/" + str(spawn_points[p_id]))
 		var player = player_scene.instance()
 
 		player.set_name(str(p_id)) # Use unique ID as node name
-		player.position=spawn_pos
+		player.set_global_position(spawn_pos)
 		player.set_network_master(p_id) #set unique id as master
 
 		if p_id == get_tree().get_network_unique_id():
@@ -116,10 +118,7 @@ remote func pre_start_game(spawn_points):
 
 		world.get_node("players").add_child(player)
 		ready = true
-	# Set up score
-	#world.get_node("score").add_player(get_tree().get_network_unique_id(), player_name)
-	#for pn in players:
-	#	world.get_node("score").add_player(pn, players[pn])
+
 
 	if not get_tree().is_network_server():
 		# Tell server we are ready to start

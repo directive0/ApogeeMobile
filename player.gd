@@ -11,16 +11,17 @@ puppet var slave_rotation = 0.0
 
 var object_name
 
-# Ship behaviour variables
+# Ship behaviour variables 
 var current_anim = ""
 var prev_bombing = false
 var prev_missiling = false
 var bomb_index = 0
 var missile_index = 0
-var spinforce = 10
+var spinforce = 15
 var brake_spin = 0.1
 var rotvel = 0
 var loaded_weapon = 0
+var throttle = 0
 
 
 var hulltype 
@@ -30,12 +31,15 @@ var fuel = 100
 var current_fuel
 var hull = 100
 var current_hull 
+var current_damage = 0
 
 
 # Ship status variables.
 var engine_on = false
 var slv_engine_on = false
 
+# game status variables
+var tech_level = 0
 
 
 
@@ -83,10 +87,11 @@ sync func explode():
 	set_mode(1)
 	$Indicator.set_visible(false)
 	exploded = true
-	
+	var respawn_panel = load("res://scenes/you_died.tscn")
+	get_tree().get_nodes_in_group("UI")[0].add_child(respawn_panel.instance())
 
 # Use sync because it will be called everywhere
-sync func setup_bomb(bomb_name, pos, by_who):
+sync func deploy(bomb_name, pos, by_who):
 	var bomb
 	if loaded_weapon == 0:
 		bomb = missile_object.instance()
@@ -107,6 +112,7 @@ sync func setup_bomb(bomb_name, pos, by_who):
 
 func _ready():
 	object_name = ship_name
+	#set_global_position(get_tree().get_nodes_in_group("spawn_point")[0].get_global_position())
 	# checks to see if we are on the computer that is actually in control of this node.
 	if is_network_master():
 		$Camera2D._set_current(true)
@@ -152,7 +158,7 @@ func _physics_process(delta):
 	if not exploded:
 		if is_network_master():
 			# handles camera zoom level-----------------------------------------------
-			zoom(delta)
+			#zoom(delta)
 			# handles ship status ----------------------------------------------------
 			throttle()
 			check_damage()
@@ -173,7 +179,7 @@ func _physics_process(delta):
 	
 				var bomb_pos = position
 				var bomb_rot = rotation
-				rpc("setup_bomb", bomb_name, bomb_pos, get_tree().get_network_unique_id())
+				rpc("deploy", bomb_name, bomb_pos, get_tree().get_network_unique_id())
 	
 			prev_bombing = firing
 			# ------------------------------------------------------------------------
@@ -257,9 +263,11 @@ func throttle():
 	
 	if engine_on:
 		$main_hull/plume.set_visible(true)
+		if throttle > 0:
+			$main_hull/plume.scale.y = 0.239 * (throttle / 100)
 	else:
 		$main_hull/plume.set_visible(false)
-		
+		$main_hull/plume.scale.y = 0.239
 		
 func burn():
 	var motion = 0
@@ -278,6 +286,11 @@ func move_player():
 		
 	if Input.is_action_pressed("move_down"):
 		pass
+		
+	if throttle > 0:
+		engine_on = true
+		motion += 3 * (throttle / 100)
+		fuel -= burnrate * (throttle / 100)
 		
 	return motion
 
@@ -299,7 +312,7 @@ func zoom(delta):
 
 
 puppet func damage():
-	stunned = true
+	pass
 	
 	# get where we were hit
 	# take damage to that area
@@ -322,7 +335,13 @@ func check_damage():
 
 			if hull == 0:
 				explode()
-
+	
+	#if current_damage == 0:
+		#if hull <= 50:
+			#current_damage
+			#var smoke = load("res://scenes/continous_smoke.tscn")
+			#add_child(smoke.instance())
+		
 
 func launch_missile():
 			# handles weapons --------------------------------------------------------
@@ -390,4 +409,9 @@ func get_facing():
 func respawn():
 	current_fuel = fuel
 	current_hull = hull
+	exploded = false
+	change_shiptype(ship_type)
+	set_global_position(get_tree().get_nodes_in_group("spawn_point")[0].get_global_position())
+	set_mode(0)
+	$Indicator.set_visible(false)
 	pass

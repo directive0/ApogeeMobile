@@ -45,6 +45,6 @@ func done():
 
 
 func _on_detonator_area_entered(area):
-	if area.is_in_group("planet") or area.is_in_group("corona"):
+	if area.is_in_group("planet") or area.is_in_group("corona") or area.is_in_group("target"):
 		explode()
 

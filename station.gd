@@ -6,6 +6,7 @@ var generating = false
 var from_player
 var fuel = 100
 var hull = 100
+var planet
 
 func _ready():
 	$expire.start()
@@ -17,7 +18,7 @@ func _physics_process(delta):
 		
 		for body in touching:
 			if body.is_in_group("planet"):
-	
+				planet = body
 				orbiting += 1
 				
 		if orbiting > 0:

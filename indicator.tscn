@@ -22,10 +22,19 @@ texture = ExtResource( 3 )
 texture = ExtResource( 4 )
 
 [node name="gravity" type="Sprite" parent="."]
+scale = Vector2( 0.69575, 0.69575 )
 texture = ExtResource( 5 )
 
 [node name="arrow" type="Sprite" parent="."]
 scale = Vector2( 0.452386, 0.452386 )
+texture = ExtResource( 6 )
+
+[node name="plume" type="Sprite" parent="arrow"]
+visible = false
+modulate = Color( 1, 1, 1, 0.658824 )
+position = Vector2( 0.00080951, 228.675 )
+rotation = -3.14159
+scale = Vector2( 0.44953, 0.44953 )
 texture = ExtResource( 6 )
 
 [node name="target_reticule" type="Sprite" parent="."]

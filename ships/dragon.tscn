@@ -6,10 +6,11 @@
 [node name="hull" type="Node2D"]
 
 [node name="plume" type="Sprite" parent="."]
-position = Vector2( -85.2966, -1.02069e-06 )
+position = Vector2( -45.9203, -0.403397 )
 rotation = 1.5708
-scale = Vector2( 0.239367, 0.239367 )
+scale = Vector2( 0.239, 0.239 )
 texture = ExtResource( 1 )
+offset = Vector2( 1.68595, 190.179 )
 
 [node name="body" type="Sprite" parent="."]
 rotation = 1.5708

@@ -1,6 +1,6 @@
-extends Node2D
+extends Control
+var subject
 
-export var speed = 1.0
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -8,10 +8,11 @@ export var speed = 1.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	subject = get_tree().get_nodes_in_group("player")[0]
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
-	rotation_degrees -= speed
+func _process(delta):
+	subject.throttle = $VSlider.value
 #	pass
