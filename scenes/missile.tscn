@@ -196,8 +196,10 @@ radius = 188.417
 radius = 18.078
 
 [sub_resource type="CircleShape2D" id=5]
+radius = 0.01
 
 [sub_resource type="CircleShape2D" id=6]
+radius = 0.01
 
 [node name="missile" type="RigidBody2D"]
 collision_layer = 6
@@ -232,10 +234,12 @@ region_rect = Rect2( 144, 0, 48, 48 )
 shape = SubResource( 4 )
 
 [node name="HUD_reticule" parent="." instance=ExtResource( 1 )]
-scale = Vector2( 0.287152, 0.364778 )
+scale = Vector2( 0.2, 0.2 )
+texture = ExtResource( 7 )
 
 [node name="nuke_wave" type="Sprite" parent="."]
-scale = Vector2( 1e-05, 1e-05 )
+self_modulate = Color( 1, 1, 1, 0 )
+scale = Vector2( 0.0725083, 0.0725084 )
 texture = ExtResource( 4 )
 
 [node name="blast" type="Area2D" parent="."]
@@ -244,8 +248,8 @@ texture = ExtResource( 4 )
 shape = SubResource( 5 )
 
 [node name="ring" type="Sprite" parent="."]
-self_modulate = Color( 0.0196078, 0.811765, 0.968627, 0.568627 )
-scale = Vector2( 1e-05, 1e-05 )
+self_modulate = Color( 0.505882, 0.631373, 1, 0 )
+scale = Vector2( 30, 30 )
 texture = ExtResource( 5 )
 
 [node name="pushback" type="Area2D" parent="."]

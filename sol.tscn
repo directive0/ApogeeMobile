@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://montserrat.otf" type="DynamicFontData" id=1]
 [ext_resource path="res://scenes/sol_system.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/roche_limit.ogg" type="AudioStream" id=3]
 [ext_resource path="res://script/music_player.gd" type="Script" id=4]
+[ext_resource path="res://scenes/missile.tscn" type="PackedScene" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 44
@@ -39,8 +40,6 @@ custom_fonts/font = SubResource( 1 )
 text = "EXIT GAME"
 
 [node name="sol_system" parent="." instance=ExtResource( 2 )]
-position = Vector2( -2295.54, 350.144 )
-scale = Vector2( 3.8811, 3.8811 )
 
 [node name="players" type="Node2D" parent="."]
 
@@ -89,3 +88,6 @@ position = Vector2( 2144.04, 226.818 )
 stream = ExtResource( 3 )
 autoplay = true
 script = ExtResource( 4 )
+
+[node name="missile" parent="." instance=ExtResource( 5 )]
+position = Vector2( 457.585, 51.0595 )
