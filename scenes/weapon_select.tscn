@@ -96,5 +96,6 @@ size_flags_vertical = 3
 texture = ExtResource( 2 )
 expand = true
 flip_h = true
+
 [connection signal="pressed" from="missile/press_missile" to="." method="_on_press_missile_pressed"]
 [connection signal="pressed" from="station/press_station" to="." method="_on_press_station_pressed"]

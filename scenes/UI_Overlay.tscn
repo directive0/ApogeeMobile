@@ -409,6 +409,8 @@ action = "move_up"
 
 [node name="gear button" parent="Control/VBoxContainer/botbar" instance=ExtResource( 11 )]
 modulate = Color( 0.282353, 0.223529, 0, 1 )
+anchor_left = 0.00157746
+anchor_right = 1.00158
 
 [node name="Control" type="Control" parent="Control/VBoxContainer/botbar"]
 margin_left = 55.0

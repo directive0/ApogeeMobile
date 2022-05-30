@@ -80,7 +80,7 @@ __meta__ = {
 
 [node name="Sprite" type="Sprite" parent="."]
 modulate = Color( 1, 1, 1, 0 )
-position = Vector2( 2277.36, 2114.31 )
+position = Vector2( 2278.36, 2114.31 )
 rotation = 0.60912
 scale = Vector2( 2.97828, 2.97828 )
 texture = ExtResource( 2 )
@@ -119,5 +119,6 @@ modulate = Color( 1, 1, 1, 0 )
 position = Vector2( -95.5361, -81.887 )
 scale = Vector2( 26.135, 11.4195 )
 normal = ExtResource( 5 )
+
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
 [connection signal="pressed" from="TouchScreenButton" to="." method="_on_TouchScreenButton_pressed"]

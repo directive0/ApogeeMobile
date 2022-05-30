@@ -8,8 +8,10 @@ var last_volume = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	set_volume_db(gamestate.music_volume)
-	last_volume = gamestate.music_volume
+	#pass
+	last_volume = gamestate.get_volume()
+	set_volume_db(last_volume)
+
 	#pass # Replace with function body.
 
 

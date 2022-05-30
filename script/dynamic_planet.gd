@@ -18,6 +18,3 @@ func _process(delta):
 		var angle = get_tree().get_nodes_in_group("star")[-1].global_position.angle_to_point(global_position)# + 3.14159
 		#var angle = get_angle_to(get_tree().get_nodes_in_group("star")[0].global_position)
 		$shadow_pivot.set_global_rotation(angle)
-		#print(get_tree().get_nodes_in_group("star").size())
-
-#	pass

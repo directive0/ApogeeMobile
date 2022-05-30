@@ -26,9 +26,10 @@ var throttle = 0
 
 var hulltype 
 var exploded = false
-var burnrate = 0.01
+var burnrate = 0.1
 var fuel = 100
 var current_fuel
+var max_fuel = 100
 var hull = 100
 var current_hull 
 var current_damage = 0
@@ -56,7 +57,7 @@ var min_zoom = 0.01
 var vostok_hull = load("res://ships/vostok.tscn")
 var soyuz_hull
 var apollo_hull
-var dragon_hull = load("res://ships/dragon.tscn")
+var dragon_hull = load("res://ships/dragon2.tscn")
 var shenzhou_hull
 var spaceshuttle_hull
 
@@ -90,6 +91,7 @@ sync func explode():
 	var respawn_panel = load("res://scenes/you_died.tscn")
 	get_tree().get_nodes_in_group("UI")[0].add_child(respawn_panel.instance())
 
+
 # Use sync because it will be called everywhere
 sync func deploy(bomb_name, pos, by_who):
 	var bomb
@@ -108,7 +110,6 @@ sync func deploy(bomb_name, pos, by_who):
 	# No need to set network mode to bomb, will be owned by master by default
 	get_node("../..").add_child(bomb)
 
-	
 
 func _ready():
 	object_name = ship_name
@@ -151,6 +152,7 @@ func _process(delta):
 
 func _physics_process(delta):
 	
+	print(rotation)
 	# zero out the motion and torque settings for this frame
 	var motion = 0.0
 	var torque = 0.0
@@ -306,11 +308,12 @@ func zoom(delta):
 		zoom += zoomit
 	if Input.is_action_pressed("zoom_in") or Input.is_action_just_released("zoom_in"):
 		zoom -= zoomit
-	
-	#$Camera2D.set_zoom(adjust)
 
 
 
+# its a puppet function so it doesn't need any behaviours. When the 
+# master explodes so too will the puppet. This function need only control
+# behavior on the non-players screen.
 puppet func damage():
 	pass
 	
@@ -334,8 +337,14 @@ func check_damage():
 			hull -= 1
 
 			if hull == 0:
+#				var touching = $Area2D.get_overlapping_areas()
 				explode()
-	
+				
+
+		if item.is_in_group("planet"):
+			fuel += 1
+			if fuel > max_fuel:
+				fuel = max_fuel
 	#if current_damage == 0:
 		#if hull <= 50:
 			#current_damage
@@ -413,5 +422,5 @@ func respawn():
 	change_shiptype(ship_type)
 	set_global_position(get_tree().get_nodes_in_group("spawn_point")[0].get_global_position())
 	set_mode(0)
-	$Indicator.set_visible(false)
+	$Indicator.set_visible(true)
 	pass

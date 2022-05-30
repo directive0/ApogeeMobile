@@ -29,7 +29,6 @@ custom_icons/tick = ExtResource( 1 )
 custom_icons/grabber_disabled = ExtResource( 1 )
 custom_icons/grabber_highlight = ExtResource( 1 )
 custom_icons/grabber = ExtResource( 1 )
-max_value = 100.0
 __meta__ = {
 "_edit_use_anchors_": false
 }

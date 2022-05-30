@@ -63,10 +63,11 @@ __meta__ = {
 }
 
 [node name="Area2D" type="Area2D" parent="."]
-visible = false
 space_override = 1
 gravity_point = true
 gravity_distance_scale = 0.001
+gravity = 20.0
+linear_damp = 0.0
 collision_layer = 3
 collision_mask = 3
 

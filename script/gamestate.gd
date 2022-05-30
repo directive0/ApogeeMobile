@@ -26,6 +26,7 @@ var player_ships = {}
 
 var ready = false
 
+var player_scene = preload("res://player.tscn").instance()
 
 # Signals to let lobby GUI know what's going on
 signal player_list_changed()
@@ -33,6 +34,9 @@ signal connection_failed()
 signal connection_succeeded()
 signal game_ended()
 signal game_error(what)
+
+func get_volume():
+	return music_volume
 
 # Callback from SceneTree
 func _player_connected(id):
@@ -88,7 +92,7 @@ remote func unregister_player(id):
 	emit_signal("player_list_changed")
 
 remote func pre_start_game(spawn_points):
-	# Adds gameworld to the tree, and HIDES the lobby (maybe you can add clients after gamestart?)
+	# Adds gameworld to the tree, and KILLS the lobby (maybe you can add clients after gamestart?)
 	var world = load("res://sol.tscn").instance()
 	get_tree().get_root().add_child(world)
 
@@ -96,14 +100,13 @@ remote func pre_start_game(spawn_points):
 
 	#get_tree().get_root().get_node("lobby").hide()
 
-	var player_scene = load("res://player.tscn")
+	#var player_scene = load("res://player.tscn")
 
 	# Puts all the players in their starting positions in the game.
 	for p_id in spawn_points:
 		var spawn_pos = get_tree().get_nodes_in_group("spawn_point")[p_id].get_global_position()
-		print(spawn_pos)
-		#var spawn_pos = world.get_node("spawn_points/" + str(spawn_points[p_id]))
-		var player = player_scene.instance()
+
+		var player = player_scene
 
 		player.set_name(str(p_id)) # Use unique ID as node name
 		player.set_global_position(spawn_pos)
@@ -169,6 +172,7 @@ func begin_game():
 
 	# Create a dictionary with peer id and respective spawn points, could be improved by randomizing
 	var spawn_points = {}
+	
 	spawn_points[1] = 0 # Server in spawn point 0
 	var spawn_point_idx = 1
 	for p in players:

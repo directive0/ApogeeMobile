@@ -1,18 +1,20 @@
 extends Node2D
 var rotate = 0
 export var speed = 3.0
-var adjust = 0.6
+var adjust = 0.2
 var camera
 var default 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	default = $orbit.get_width()
-	#randomize()
+	randomize()
 	
-	#var randrotate = randi()%361+1
+	
+	var randrotate = randi()%361+1
+	rotate = randrotate
 	#print(randrotate)
-	#set_rotation_degrees(randrotate)
+	set_rotation_degrees(randrotate)
 	#print(get_tree().get_nodes_in_group("camera")[0])
 	
 	pass # Replace with function body.

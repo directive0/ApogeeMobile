@@ -4,7 +4,7 @@
 [ext_resource path="res://scenes/sol_system.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/roche_limit.ogg" type="AudioStream" id=3]
 [ext_resource path="res://script/music_player.gd" type="Script" id=4]
-[ext_resource path="res://scenes/missile.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/asteroid.tscn" type="PackedScene" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 44
@@ -89,5 +89,38 @@ stream = ExtResource( 3 )
 autoplay = true
 script = ExtResource( 4 )
 
-[node name="missile" parent="." instance=ExtResource( 5 )]
-position = Vector2( 457.585, 51.0595 )
+[node name="asteroid" parent="." instance=ExtResource( 5 )]
+position = Vector2( 3019.86, 0.0934372 )
+sleeping = false
+
+[node name="asteroid2" parent="." instance=ExtResource( 5 )]
+position = Vector2( 2889.01, -60.1889 )
+sleeping = false
+
+[node name="asteroid4" parent="." instance=ExtResource( 5 )]
+position = Vector2( 2924.55, 1034.37 )
+sleeping = false
+
+[node name="asteroid5" parent="." instance=ExtResource( 5 )]
+position = Vector2( 2879.53, 567.644 )
+sleeping = false
+
+[node name="asteroid6" parent="." instance=ExtResource( 5 )]
+position = Vector2( 3227.8, 451.555 )
+sleeping = false
+
+[node name="asteroid7" parent="." instance=ExtResource( 5 )]
+position = Vector2( -2724.69, -1447.96 )
+sleeping = false
+
+[node name="asteroid8" parent="." instance=ExtResource( 5 )]
+position = Vector2( -2816.11, 1497.81 )
+sleeping = false
+
+[node name="asteroid9" parent="." instance=ExtResource( 5 )]
+position = Vector2( -1048.64, 2838.64 )
+sleeping = false
+
+[node name="asteroid3" parent="." instance=ExtResource( 5 )]
+position = Vector2( 3077.3, -28.9839 )
+sleeping = false

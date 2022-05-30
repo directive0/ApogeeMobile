@@ -5,6 +5,7 @@ var targets
 var target
 var default
 var zoomset = 4
+var zoominset = 1
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -66,6 +67,11 @@ func _process(delta):
 		$target_reticule.set_visible(true)
 		set_scale((camera.get_zoom() / Vector2(zoomset,zoomset)) * default)
 		$target_reticule.set_scale((camera.get_zoom() / Vector2(zoomset,zoomset)) * default)
+	elif camera.get_zoom().y < zoominset:
+		$arrow.set_visible(false)
+		$target_reticule.set_visible(true)
+		set_scale((camera.get_zoom() / Vector2(zoominset,zoominset)) * default)
+		$target_reticule.set_scale((camera.get_zoom() / Vector2(zoominset,zoominset)) * default)
 	else:
 		$arrow.set_visible(false)
 		$target_reticule.set_visible(false)
