@@ -62,12 +62,12 @@ zoomset = 10
 
 [node name="Area2D" type="Area2D" parent="."]
 visible = false
+collision_layer = 3
+collision_mask = 3
 input_pickable = false
 space_override = 1
 gravity_point = true
 gravity_distance_scale = 0.001
-collision_layer = 3
-collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 2 )
@@ -92,16 +92,14 @@ object_name = "Mercury"
 
 [node name="gravity" type="Area2D" parent="mercury/planet"]
 visible = false
+collision_layer = 3
+collision_mask = 3
 space_override = 1
 gravity_point = true
 gravity_distance_scale = 0.001
 gravity = 40.0
-collision_layer = 3
-collision_mask = 3
 
-[node name="surface" type="Area2D" parent="mercury/planet" groups=[
-"planet",
-]]
+[node name="surface" type="Area2D" parent="mercury/planet" groups=["planet"]]
 visible = false
 collision_layer = 8
 collision_mask = 8

@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/VCR_Small.tres" type="DynamicFont" id=1]
+[ext_resource path="res://label.gd" type="Script" id=2]
+
+[node name="Node2D" type="Node2D"]
+show_behind_parent = true
+script = ExtResource( 2 )
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PoolVector2Array( 0, 0, 99.9999, -100, 250, -100 )
+width = 5.0
+default_color = Color( 1, 1, 1, 1 )
+
+[node name="label" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = 91.9231
+margin_top = -140.28
+margin_right = 258.923
+margin_bottom = -113.28
+size_flags_horizontal = 2
+size_flags_vertical = 0
+custom_fonts/font = ExtResource( 1 )
+text = "Player 1"
+align = 1

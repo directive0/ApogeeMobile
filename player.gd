@@ -17,7 +17,8 @@ var prev_bombing = false
 var prev_missiling = false
 var bomb_index = 0
 var missile_index = 0
-var spinforce = 15
+var spinforce = 0
+var spin = 5
 var brake_spin = 0.1
 var rotvel = 0
 var loaded_weapon = 0
@@ -31,6 +32,7 @@ var fuel = 100
 var current_fuel
 var max_fuel = 100
 var hull = 100
+var default_hull = 100
 var current_hull 
 var current_damage = 0
 
@@ -119,6 +121,7 @@ func _ready():
 		$Camera2D._set_current(true)
 		$Camera2D.set_as_toplevel(true)
 		$Camera2D.add_to_group("camera")
+		$label.queue_free()
 		add_to_group("player")
 	else:
 		add_to_group("target")
@@ -152,7 +155,6 @@ func _process(delta):
 
 func _physics_process(delta):
 	
-	print(rotation)
 	# zero out the motion and torque settings for this frame
 	var motion = 0.0
 	var torque = 0.0
@@ -169,10 +171,9 @@ func _physics_process(delta):
 			
 			torque = rotate_player()
 			# ------------------------------------------------------------------------
-	
+
 			# handles weapons --------------------------------------------------------
 			var firing = Input.is_action_pressed("fire_weapon")
-	
 	
 			#Checks to see if a bomb is not already being deployed
 			if firing and not prev_bombing:
@@ -223,6 +224,7 @@ func change_shiptype(ship):
 		hulltype = dragon_hull.instance()
 		hulltype.set_name("main_hull")
 		add_child(hulltype)
+		move_child(hulltype, 100)
 
 func query_target():
 	var targets = get_tree().get_nodes_in_group("target")
@@ -234,12 +236,12 @@ func query_target():
 	if Input.is_action_just_pressed("target_up"):
 		target_index += 1
 		if target_index > (targets.size()-1):
-			target_index = (targets.size() - 1)
+			target_index = 0
 	if Input.is_action_just_pressed("target_down"):
 		target_index -= 1
 		if target_index < 0:
-			target_index = 0
-	#print(targets)
+			target_index = (targets.size() - 1)
+			
 
 
 func rotate_left():
@@ -253,20 +255,22 @@ func rotate_right():
 func rotate_player():
 	var rotation = 0.0
 	if Input.is_action_pressed("move_left"):
-		rotation = -spinforce
+		spinforce = Input.get_action_strength("move_left")
+		rotation = -spinforce * spin
 	if Input.is_action_pressed("move_right"):
-		rotation = spinforce
+		spinforce = Input.get_action_strength("move_right")
+		rotation = spinforce * spin
 	if Input.is_action_pressed("move_down"):
 		auto_brake()
 		rotation = rotvel
 	return rotation
 	
 func throttle():
-	
+	# concerns itself with the plume size
 	if engine_on:
 		$main_hull/plume.set_visible(true)
 		if throttle > 0:
-			$main_hull/plume.scale.y = 0.239 * (throttle / 100)
+			$main_hull/plume.scale.y = 0.239 * (throttle * .5)
 	else:
 		$main_hull/plume.set_visible(false)
 		$main_hull/plume.scale.y = 0.239
@@ -283,16 +287,15 @@ func move_player():
 
 	if Input.is_action_pressed("move_up"):
 		fuel -= burnrate
-		motion += 3
+		throttle = Input.get_action_strength("move_up")
+		print(throttle)
+		motion += 3 * throttle
 		engine_on = true
+		fuel -= burnrate * (throttle / 100)
 		
 	if Input.is_action_pressed("move_down"):
 		pass
 		
-	if throttle > 0:
-		engine_on = true
-		motion += 3 * (throttle / 100)
-		fuel -= burnrate * (throttle / 100)
 		
 	return motion
 
@@ -328,7 +331,7 @@ master func hit(by_who):
 	damage() # Stun master - could use sync to do both at once
 
 func set_player_name(new_name,shiptype = "Vostok"):
-	get_node("label").set_text(new_name)
+	get_node("label").get_node("label").set_text(new_name)
 	ship_type = shiptype
 
 func check_damage():
@@ -357,7 +360,7 @@ func launch_missile():
 		var missiling = Input.is_action_pressed("set_bomb")
 
 
-		#Checks to see if a bomb is not already being deployed
+		#Checks to see if a missile is not already being deployed
 		if missiling and not prev_missiling:
 			#if not then make a new bomb with a name made of the ships name and the unique ID of the bomb
 			var missile_name = get_name() + str(missile_index)
@@ -373,7 +376,7 @@ func come_to_heading(heading):
 
 	# if the heading we need to come to does not equal our current rotation
 	var degangle = get_facing()
-	var difference = abs(heading - degangle)
+	var difference = short_angle_dist(degangle, heading)
 
 	if difference > deg2rad(180):
 		rotvel -= spinforce
@@ -410,6 +413,11 @@ func auto_brake():
 		come_to_heading(desired_angle)
 	return rotvel
 
+func short_angle_dist(from, to):
+	var max_angle = PI * 2
+	var difference = fmod(to - from, max_angle)
+	return fmod(2 * difference, max_angle) - difference
+
 func get_facing():
 	var facing = get_rotation()
 	#print("facing = ", facing)
@@ -417,7 +425,7 @@ func get_facing():
 
 func respawn():
 	current_fuel = fuel
-	current_hull = hull
+	hull = default_hull
 	exploded = false
 	change_shiptype(ship_type)
 	set_global_position(get_tree().get_nodes_in_group("spawn_point")[0].get_global_position())

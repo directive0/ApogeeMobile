@@ -3,7 +3,7 @@ export (NodePath) var target
 
 var target_return_enabled = true
 var target_return_rate = 0.1
-var min_zoom = 0.3
+var min_zoom = 0.1
 var max_zoom = 600
 var zoom_sensitivity = 20
 var zoom_speed = 0.05
@@ -29,7 +29,7 @@ func zoom(delta):
 		zoom += zoomit
 	if Input.is_action_pressed("zoom_in") or Input.is_action_just_released("zoom_in"):
 		zoom -= zoomit
-	
+
 	print(zoom)
 	set_zoom(zoom)
 

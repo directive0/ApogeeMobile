@@ -4,8 +4,11 @@ var camera
 var targets
 var target
 var default
-var zoomset = 4
-var zoominset = 1
+var zoomset = 1
+var maxzoom = 4
+
+var last_target
+var new_target
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"
@@ -27,6 +30,12 @@ func pointing():
 	return subject.get_rotation()
 
 func target():
+	
+	new_target = subject.target
+	if last_target != new_target:
+		last_target = new_target
+		$target_reticule/path_tracker.point_array = []
+		
 	var target_loc = subject.target.global_position
 	var rotater = target_loc.angle_to_point(subject.position) - deg2rad(0)
 	$target_reticule.set_as_toplevel(true)
@@ -61,20 +70,34 @@ func _process(delta):
 		$gravity.set_rotation(gravity())
 		$target.set_rotation(target())
 	
-	#turns the heading arrow on when zoomed out, and removes it when zoomed in
-	if camera.get_zoom().y > zoomset:
+	#when camera zoomed out:
+	if camera.get_zoom().y > gamestate.zoomset:
+		
+		# turn elements on
 		$arrow.set_visible(true)
 		$target_reticule.set_visible(true)
-		set_scale((camera.get_zoom() / Vector2(zoomset,zoomset)) * default)
-		$target_reticule.set_scale((camera.get_zoom() / Vector2(zoomset,zoomset)) * default)
-	elif camera.get_zoom().y < zoominset:
-		$arrow.set_visible(false)
-		$target_reticule.set_visible(true)
-		set_scale((camera.get_zoom() / Vector2(zoominset,zoominset)) * default)
-		$target_reticule.set_scale((camera.get_zoom() / Vector2(zoominset,zoominset)) * default)
+
+		# when zoomed out really really far hold size 
+		if camera.get_zoom().y > gamestate.maxzoom:
+			var adjust = camera.get_zoom().y / gamestate.maxzoom
+			set_scale(default * adjust)
+			$target_reticule.set_scale(default * adjust)
+		else:
+			$target_reticule.set_scale(default)
+	# when not zoomed out
 	else:
+		# turn elements off and reset sizing
 		$arrow.set_visible(false)
 		$target_reticule.set_visible(false)
 		$target_reticule.set_scale(default)
 		set_scale(default)
+
+	# when camera zoomed in closely:
+	if camera.get_zoom().y < gamestate.zoomset:
+		# turn off orientation arrow and target reticule
+		$arrow.set_visible(false)
+		$target_reticule.set_visible(false)
+		
+		set_scale((camera.get_zoom() / Vector2(gamestate.zoomset,gamestate.zoomset)) * default)
+		$target_reticule.set_scale((camera.get_zoom() / Vector2(gamestate.zoomset,gamestate.zoomset)) * default)
 

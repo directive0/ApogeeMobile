@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://script/indicator.gd" type="Script" id=1]
 [ext_resource path="res://assets/ring.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://assets/gravity.png" type="Texture" id=5]
 [ext_resource path="res://assets/arrow.png" type="Texture" id=6]
 [ext_resource path="res://assets/crosshair036.png" type="Texture" id=7]
+[ext_resource path="res://path_tracker.tscn" type="PackedScene" id=8]
 
 [node name="Indicator" type="Node2D"]
 rotation = 1.5708
@@ -41,3 +42,12 @@ texture = ExtResource( 6 )
 self_modulate = Color( 1, 0.819608, 0, 0.580392 )
 scale = Vector2( 1.95317, 1.95317 )
 texture = ExtResource( 7 )
+
+[node name="path_tracker" parent="target_reticule" instance=ExtResource( 8 )]
+default_color = Color( 0.984314, 0.784314, 0.00392157, 0.329412 )
+
+[node name="Timer" type="Timer" parent="target_reticule/path_tracker"]
+wait_time = 0.5
+autostart = true
+
+[connection signal="timeout" from="target_reticule/path_tracker/Timer" to="target_reticule/path_tracker" method="_on_Timer_timeout"]

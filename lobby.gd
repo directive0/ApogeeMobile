@@ -2,12 +2,9 @@ extends Control
 
 func _ready():
 	# Called every time the node is added to the scene.
-	print("trying gamestate")
+
 	gamestate.connect("connection_failed", self, "_on_connection_failed")
-	print("Succeeded")
-	print("trying again")
 	gamestate.connect("connection_succeeded", self, "_on_connection_success")
-	print("Succeeded")
 	gamestate.connect("player_list_changed", self, "refresh_lobby")
 	gamestate.connect("game_ended", self, "_on_game_ended")
 	gamestate.connect("game_error", self, "_on_game_error")
@@ -79,7 +76,6 @@ func refresh_lobby():
 	get_node("players/VBoxContainer/start").disabled = not get_tree().is_network_server()
 
 func _on_start_pressed():
-	print("beginning game!")
 	gamestate.begin_game()
 
 

@@ -11,31 +11,27 @@ radius = 187.797
 [sub_resource type="CircleShape2D" id=2]
 radius = 19429.1
 
-[node name="planet" type="Node2D" groups=[
-"target",
-]]
+[node name="planet" type="Node2D" groups=["target"]]
 script = ExtResource( 3 )
 
-[node name="surface" type="Area2D" parent="." groups=[
-"planet",
-]]
-input_pickable = false
+[node name="surface" type="Area2D" parent="." groups=["planet"]]
 collision_layer = 8
 collision_mask = 8
+input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="surface"]
 visible = false
 shape = SubResource( 1 )
 
 [node name="gravity" type="Area2D" parent="."]
+collision_layer = 3
+collision_mask = 3
 input_pickable = false
 space_override = 1
 gravity_point = true
 gravity_distance_scale = 0.001
 gravity = 40.0
 linear_damp = 0.0
-collision_layer = 3
-collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="gravity"]
 shape = SubResource( 2 )

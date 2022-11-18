@@ -9,6 +9,12 @@ var subject
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
+	#disables touch UI elements.
+	if gamestate.device_type == 0:
+		var ui = get_tree().get_nodes_in_group("touch_ui")
+		for uis in ui:
+			uis.queue_free()
 	#print(get_tree().get_nodes_in_group("player"))
 
 	pass # Replace with function body.

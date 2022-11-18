@@ -20,6 +20,9 @@ const MAX_PEERS = 12
 var player_name = "The Warrior"
 var player_ship = "Vostok"
 
+var zoomset = 1
+var maxzoom = 4
+
 # Names for remote players in id:name format
 var players = {}
 var player_ships = {}
@@ -94,18 +97,22 @@ remote func unregister_player(id):
 remote func pre_start_game(spawn_points):
 	# Adds gameworld to the tree, and KILLS the lobby (maybe you can add clients after gamestart?)
 	var world = load("res://sol.tscn").instance()
+	world.set_network_master(1)
 	get_tree().get_root().add_child(world)
 
 	get_tree().get_root().get_node("lobby").queue_free()
 
 	#get_tree().get_root().get_node("lobby").hide()
-
+	var testnumber = 1
 	#var player_scene = load("res://player.tscn")
 
 	# Puts all the players in their starting positions in the game.
 	for p_id in spawn_points:
-		var spawn_pos = get_tree().get_nodes_in_group("spawn_point")[p_id].get_global_position()
+		print(p_id)
+		var spawn_pos = get_tree().get_nodes_in_group("spawn_point")[testnumber].get_global_position()
 
+		
+		
 		var player = player_scene
 
 		player.set_name(str(p_id)) # Use unique ID as node name
@@ -118,7 +125,7 @@ remote func pre_start_game(spawn_points):
 		else:
 			# Otherwise set name from peer
 			player.set_player_name(players[p_id], player_ships[p_id])
-
+		testnumber += 1
 		world.get_node("players").add_child(player)
 		ready = true
 
@@ -188,10 +195,13 @@ func end_game():
 	if has_node("/root/world"): # Game is in progress
 		# End it
 		get_node("/root/world").queue_free()
+		var lobby = load("res://lobby.tscn").instance()
+		get_tree().get_root().add_child(lobby)
 
 	emit_signal("game_ended")
 	players.clear()
 	get_tree().set_network_peer(null) # End networking
+	
 
 func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")

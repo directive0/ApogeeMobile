@@ -5,7 +5,7 @@ var in_area = []
 var from_player
 var fuel = 400
 var explosion = preload("res://scenes/explosion.tscn")
-var thrust = 30
+var thrust = .5
 var stop = false
 # Called from the animation
 func explode():
@@ -13,6 +13,7 @@ func explode():
 	#add_child(explosion.instance())
 	#$nuke_wave.set_as_toplevel(true)
 	$pushback.set_gravity_is_point(true) 
+	$HUD_reticule.queue_free()
 	$anim.set_assigned_animation("explode")
 	$anim.play()
 	

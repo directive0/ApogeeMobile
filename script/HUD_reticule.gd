@@ -4,7 +4,7 @@ var camera
 var targets
 var target
 var default
-var zoomset = 6
+var zoomset = gamestate.zoomset
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -20,10 +20,12 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-#	pass
+	
+	set_rotation(-get_parent().rotation)
+#	
 	if camera.get_zoom().y > zoomset:
 		set_visible(true)
-		set_scale((camera.get_zoom() / Vector2(zoomset,zoomset)) * default)
+		set_scale(camera.get_zoom() * default)
 	else:
 		set_visible(false)
 		set_scale(default)

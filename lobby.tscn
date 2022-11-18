@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://lobby.gd" type="Script" id=1]
 [ext_resource path="res://shipoption.gd" type="Script" id=2]
@@ -14,6 +14,7 @@
 [ext_resource path="res://scenes/info_pane.tscn" type="PackedScene" id=12]
 [ext_resource path="res://assets/20140221_ngc6992_poss2_czernetz.png" type="Texture" id=13]
 [ext_resource path="res://stars_trans.png" type="Texture" id=14]
+[ext_resource path="res://assets/main_font_small.tres" type="DynamicFont" id=15]
 [ext_resource path="res://scenes/settings_pane.tscn" type="PackedScene" id=16]
 [ext_resource path="res://script/music_player.gd" type="Script" id=17]
 
@@ -24,6 +25,25 @@ font_data = ExtResource( 4 )
 [sub_resource type="DynamicFont" id=2]
 size = 200
 font_data = ExtResource( 5 )
+
+[sub_resource type="Animation" id=3]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("TextureRect2:rect_rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ 0.0 ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "idle"
+length = 30.0
 
 [node name="lobby" type="Control"]
 anchor_right = 1.0
@@ -36,9 +56,6 @@ mouse_filter = 2
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="TextureRect" type="TextureRect" parent="."]
 self_modulate = Color( 1, 1, 1, 0.509804 )
@@ -55,16 +72,13 @@ __meta__ = {
 self_modulate = Color( 1, 1, 1, 0.509804 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -821.575
-margin_top = -629.0
-margin_right = 826.425
-margin_bottom = 630.0
+margin_left = -532.539
+margin_top = -476.876
+margin_right = 1115.46
+margin_bottom = 782.124
 texture = ExtResource( 14 )
 expand = true
 stretch_mode = 2
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 anchor_left = 0.047
@@ -77,8 +91,8 @@ margin_right = 1211.93
 margin_bottom = 237.2
 rect_clip_content = false
 mouse_filter = 2
-custom_fonts/normal_font = ExtResource( 3 )
 custom_colors/default_color = Color( 1, 0.678431, 0, 1 )
+custom_fonts/normal_font = ExtResource( 3 )
 text = "Apogee"
 scroll_active = false
 __meta__ = {
@@ -120,8 +134,8 @@ margin_top = 0.200005
 margin_right = 1423.76
 margin_bottom = 237.2
 rect_clip_content = false
-custom_fonts/normal_font = SubResource( 2 )
 custom_colors/default_color = Color( 1, 0.678431, 0, 1 )
+custom_fonts/normal_font = SubResource( 2 )
 scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
@@ -132,13 +146,11 @@ anchor_left = 0.976
 anchor_top = 0.353
 anchor_right = 0.976
 anchor_bottom = 0.66
-margin_left = -881.0
-margin_top = -255.5
-margin_bottom = 255.5
+margin_left = -878.44
+margin_top = -27.24
+margin_right = 2.55994
+margin_bottom = 328.2
 color = Color( 0.470588, 0.470588, 0.470588, 0.223529 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="connect"]
 anchor_right = 1.0
@@ -153,61 +165,61 @@ __meta__ = {
 }
 
 [node name="name_label" type="Label" parent="connect/VBoxContainer"]
-margin_right = 871.0
-margin_bottom = 33.0
+margin_right = 870.0
+margin_bottom = 44.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_fonts/font = ExtResource( 7 )
 text = "Name:"
 
 [node name="name" type="LineEdit" parent="connect/VBoxContainer"]
-margin_top = 37.0
-margin_right = 871.0
-margin_bottom = 80.0
+margin_top = 48.0
+margin_right = 870.0
+margin_bottom = 102.0
 size_flags_horizontal = 3
 size_flags_vertical = 2
 custom_fonts/font = ExtResource( 7 )
 text = "SS Journeyman"
 
 [node name="ip_label" type="Label" parent="connect/VBoxContainer"]
-margin_top = 203.0
-margin_right = 871.0
-margin_bottom = 236.0
+margin_top = 164.0
+margin_right = 870.0
+margin_bottom = 208.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_fonts/font = ExtResource( 7 )
 text = "IP:"
 
 [node name="ip" type="LineEdit" parent="connect/VBoxContainer"]
-margin_top = 240.0
-margin_right = 871.0
-margin_bottom = 283.0
+margin_top = 212.0
+margin_right = 870.0
+margin_bottom = 266.0
 size_flags_horizontal = 3
 size_flags_vertical = 2
 custom_fonts/font = ExtResource( 7 )
 text = "127.0.0.1"
 
 [node name="ip_label2" type="Label" parent="connect/VBoxContainer"]
-margin_top = 406.0
-margin_right = 871.0
-margin_bottom = 439.0
+margin_top = 328.0
+margin_right = 870.0
+margin_bottom = 372.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_fonts/font = ExtResource( 7 )
 text = "Ship Type:"
 
 [node name="OptionButton" type="OptionButton" parent="connect/VBoxContainer"]
-margin_top = 443.0
-margin_right = 871.0
-margin_bottom = 482.0
+margin_top = 376.0
+margin_right = 870.0
+margin_bottom = 426.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 7 )
 script = ExtResource( 2 )
 
 [node name="error_label" type="Label" parent="connect/VBoxContainer"]
-margin_top = 486.0
-margin_right = 871.0
-margin_bottom = 500.0
+margin_top = 430.0
+margin_right = 870.0
+margin_bottom = 444.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_colors/font_color = Color( 0.820312, 0.291595, 0.291595, 1 )
@@ -215,9 +227,9 @@ align = 1
 
 [node name="host" type="TextureButton" parent="connect/VBoxContainer"]
 self_modulate = Color( 1, 0.631373, 0, 0.243137 )
-margin_top = 504.0
-margin_right = 871.0
-margin_bottom = 666.0
+margin_top = 448.0
+margin_right = 870.0
+margin_bottom = 560.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture_normal = ExtResource( 8 )
@@ -236,9 +248,9 @@ __meta__ = {
 
 [node name="join" type="TextureButton" parent="connect/VBoxContainer"]
 self_modulate = Color( 1, 0.631373, 0, 0.243137 )
-margin_top = 670.0
-margin_right = 871.0
-margin_bottom = 832.0
+margin_top = 564.0
+margin_right = 870.0
+margin_bottom = 677.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture_normal = ExtResource( 8 )
@@ -261,9 +273,10 @@ anchor_left = 0.976
 anchor_top = 0.353
 anchor_right = 0.976
 anchor_bottom = 0.66
-margin_left = -881.0
-margin_top = -255.5
-margin_bottom = 255.5
+margin_left = -878.44
+margin_top = -27.24
+margin_right = 2.55994
+margin_bottom = 328.2
 color = Color( 0.470588, 0.470588, 0.470588, 0.223529 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -282,25 +295,27 @@ __meta__ = {
 }
 
 [node name="name_label" type="Label" parent="players/VBoxContainer"]
-margin_right = 871.0
-margin_bottom = 33.0
+margin_right = 870.0
+margin_bottom = 44.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_fonts/font = ExtResource( 7 )
-text = "Name:"
+text = "Players:"
 
 [node name="list" type="ItemList" parent="players/VBoxContainer"]
-margin_top = 37.0
-margin_right = 871.0
-margin_bottom = 423.0
+margin_top = 48.0
+margin_right = 870.0
+margin_bottom = 351.0
 rect_min_size = Vector2( 0, 166.64 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_fonts/font = ExtResource( 15 )
+auto_height = true
 
 [node name="error_label" type="Label" parent="players/VBoxContainer"]
-margin_top = 427.0
-margin_right = 871.0
-margin_bottom = 441.0
+margin_top = 355.0
+margin_right = 870.0
+margin_bottom = 369.0
 size_flags_horizontal = 3
 size_flags_vertical = 0
 custom_colors/font_color = Color( 0.820312, 0.291595, 0.291595, 1 )
@@ -308,9 +323,9 @@ align = 1
 
 [node name="start" type="TextureButton" parent="players/VBoxContainer"]
 self_modulate = Color( 1, 0.631373, 0, 0.243137 )
-margin_top = 445.0
-margin_right = 871.0
-margin_bottom = 832.0
+margin_top = 373.0
+margin_right = 870.0
+margin_bottom = 677.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture_normal = ExtResource( 8 )
@@ -345,8 +360,9 @@ anchor_left = 0.043
 anchor_top = 1.0
 anchor_right = 0.043
 anchor_bottom = 1.0
+margin_left = 39.7333
 margin_top = -200.005
-margin_right = 200.0
+margin_right = 239.733
 rect_scale = Vector2( 0.556974, 0.556974 )
 mouse_filter = 1
 texture_normal = ExtResource( 10 )
@@ -356,9 +372,9 @@ __meta__ = {
 
 [node name="gear_button" parent="." instance=ExtResource( 9 )]
 modulate = Color( 0.984314, 0.784314, 0.00392157, 1 )
-margin_left = 224.0
+margin_left = 307.079
 margin_top = 882.0
-margin_right = -1877.0
+margin_right = -1132.92
 margin_bottom = -87.0
 
 [node name="settings_pane" parent="." instance=ExtResource( 16 )]
@@ -368,6 +384,11 @@ mouse_filter = 1
 [node name="info_pane" parent="." instance=ExtResource( 12 )]
 visible = false
 mouse_filter = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 3 )
+anims/idle = SubResource( 4 )
+
 [connection signal="pressed" from="connect/VBoxContainer/host" to="." method="_on_host_pressed"]
 [connection signal="pressed" from="connect/VBoxContainer/join" to="." method="_on_join_pressed"]
 [connection signal="pressed" from="players/VBoxContainer/start" to="." method="_on_start_pressed"]

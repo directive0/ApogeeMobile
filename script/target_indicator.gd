@@ -15,9 +15,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	$ColorRect/VBoxContainer/name.set_text(str(subject.target.object_name))
-	
-	var distance = subject.get_global_position().distance_to(subject.target.get_global_position())
-	var adjusted = distance / 1496
-	$ColorRect/VBoxContainer/distance.set_text(str(stepify(adjusted,0.001)) + " AU")
+	if is_network_master():
+		$ColorRect/VBoxContainer/name.set_text(str(subject.target.object_name))
+		
+		var distance = subject.get_global_position().distance_to(subject.target.get_global_position())
+		var adjusted = distance / 1496
+		$ColorRect/VBoxContainer/distance.set_text(str(stepify(adjusted,0.001)) + " AU")
 #	pass

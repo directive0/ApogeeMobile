@@ -75,8 +75,10 @@ animations = [ {
 [sub_resource type="CircleShape2D" id=3]
 radius = 7.89241
 
-[node name="asteroid" type="RigidBody2D"]
+[node name="asteroid" type="RigidBody2D" groups=["target"]]
 sleeping = true
+linear_damp = 0.0
+angular_damp = 0.0
 script = ExtResource( 60 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -85,7 +87,7 @@ shape = SubResource( 1 )
 [node name="asteroid" type="AnimatedSprite" parent="."]
 scale = Vector2( 0.546362, 0.546362 )
 frames = SubResource( 2 )
-frame = 26
+frame = 47
 playing = true
 
 [node name="damage" type="Area2D" parent="."]

@@ -23,13 +23,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	set_width(camera.get_zoom().y * default)
 	set_points(point_array)
 
-	if camera.get_zoom().y > zoompoint:
-		set_width((camera.get_zoom().y / zoompoint) * default)
-	else:
-		set_width(default)
-#	pass
+
 
 
 
